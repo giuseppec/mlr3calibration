@@ -37,12 +37,13 @@
 #'
 #' # Initialize the calibrated learner
 #' rsmp <- rsmp("cv", folds = 5)
-#' learner_cal <- as_learner(po("calibration_tune_first",
-#' learner = auto_tuner(tuner = tnr("random_search"),
+#' at <- auto_tuner(tuner = tnr("random_search"),
 #'  learner = learner_uncal,
 #'  resampling = rsmp("cv", folds = 2),
 #'  measure = msr("classif.bbrier"),
-#'  term_evals = 10), rsmp = rsmp, method = "platt"))
+#'  term_evals = 10)
+#' learner_cal <- as_learner(PipeOpCalibrationTuneFirst$new(
+#'  learner = at, rsmp = rsmp, method = "platt"))
 #'
 #' # Set ID's for the learners
 #' learner_cal$id <- "Calibrated Learner"

@@ -34,6 +34,7 @@ learner_cal$id <- "Calibrated Learner"
 
 # Train the calibrated learner
 learner_cal$train(task)
+learner_cal$predict(task)$score(msr("classif.bbrier"))
 }
 \references{
 Filho TMS, Kull M (2017). betacal: Beta Calibration_. R package version 0.1.0, \url{https://CRAN.R-project.org/package=betacal}.

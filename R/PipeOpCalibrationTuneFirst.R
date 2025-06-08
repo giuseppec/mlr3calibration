@@ -50,6 +50,7 @@
 #'
 #' # Train the calibrated learner
 #' learner_cal$train(task)
+#' learner_cal$predict(task)$score(msr("classif.bbrier"))
 #' @export
 
 PipeOpCalibrationTuneFirst <- R6::R6Class(

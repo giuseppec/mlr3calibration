@@ -145,7 +145,7 @@ PipeOpCalibrationPerFold <- R6::R6Class(
 
         colnames(calibration_data) = c("truth", "response")
         calibration_data$response = as.numeric(calibration_data$response)
-
+# TODO make more methods possible
         if (self$method == "platt") {
           task_for_calibrator = as_task_classif(calibration_data,
             target = "truth",
@@ -185,7 +185,7 @@ PipeOpCalibrationPerFold <- R6::R6Class(
             get(paste0("prob.", positive))))
         colnames(calibration_data) = c("truth", "response")
         calibration_data$response = as.numeric(calibration_data$response)
-
+# TODO
         if (self$method == "platt") {
           task_for_calibrator = as_task_classif(calibration_data,
             target = "truth",

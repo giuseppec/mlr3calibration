@@ -9,6 +9,7 @@
 #' @export
 
 Calibrator <- R6::R6Class("Calibrator",
+                        #' @param parameters Parameters for beta calibration. Default is `"abm"`.
                       public = list(
                         #' @description Abstract initializer
                         #' @param calibration_data A data.table with columns "truth" and "response"

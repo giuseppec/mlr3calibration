@@ -3,7 +3,9 @@ CalibratorPlatt <- R6::R6Class("CalibratorPlatt",
                            public = list(
                              calib = NULL,
 
-                             initialize = function(calibration_data) {
+                             initialize = function(calibration_data, task) {
+                               task = task
+                               positive = task$positive
                                # For example, fit a logistic regression model
                                task_for_calibrator = as_task_classif(calibration_data,
                                                                      target = "truth",
@@ -13,7 +15,9 @@ CalibratorPlatt <- R6::R6Class("CalibratorPlatt",
                                self$calib$train(task_for_calibrator)
                              },
 
-                             predict = function(calibration_data) {
+                             predict = function(calibration_data, task) {
+                               task = task
+                               positive = task$positive
                                task_for_calibrator = as_task_classif(calibration_data,
                                                                      target = "truth",
                                                                      positive = positive,

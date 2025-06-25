@@ -32,3 +32,5 @@ CalibratorIsotonic <- R6::R6Class("CalibratorIsotonic",
                                  }
                                )
 )
+
+register_calibrator("isotonic", CalibratorIsotonic)

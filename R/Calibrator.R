@@ -1,5 +1,8 @@
 #' @title Abstract interface for Calibrator
 #'
+#' Calibrator base class and registry
+#' @keywords internal
+#'
 #' @description
 #' Abstract interface for Calibrator
 #' Is implemented by Platt scaling, isotonic regression, and beta calibration.
@@ -26,3 +29,24 @@ Calibrator <- R6::R6Class("Calibrator",
                         }
                       )
 )
+
+# Private environment for registry
+.calibrator_registry <- new.env(parent = emptyenv())
+
+#' Register a calibrator subclass
+#' @keywords internal
+register_calibrator <- function(name, calibrator_class) {
+  assign(name, calibrator_class, envir = .calibrator_registry)
+}
+
+#' Factory function to create a calibrator
+#' @export
+create_calibrator <- function(name, calibration_data, task) {
+  if (!exists(name, envir = .calibrator_registry)) {
+    stop(sprintf("Calibrator '%s' is not registered.", name))
+  }
+  calibrator_class <- get(name, envir = .calibrator_registry)
+  calibrator_class$new(calibration_data, task)
+}
+
+

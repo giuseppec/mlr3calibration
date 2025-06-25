@@ -1,4 +1,4 @@
-# 1. Calibrator should allow to generato own calibration methods
+# 1. Calibrator should allow to generate own calibration methods
 
 <<interface>>
 Calibrator
@@ -12,3 +12,10 @@ is implemented by
 - CalibratorPlatt
 - CalibratorIsotonic
 - CalibratorBeta
+
+what is still to do
+
+- create a dictionary?
+- refactor the code using these calibrators
+
+# 2. A

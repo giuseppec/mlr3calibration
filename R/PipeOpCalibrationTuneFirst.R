@@ -60,7 +60,7 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
   public = list(
     learner = NULL,
     method = NULL,
-    rsmp = NULL,
+    rsmp = NULL, # rename in resampling
     learners = NULL,
     calibrators = NULL,
     rr = NULL,

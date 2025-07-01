@@ -1,6 +1,6 @@
 #' @title Platt Isotonic
 #'
-#' @name platt
+#' @name isotonic
 #'
 #' @description
 #' Creates a new instance of this [R6][R6::R6Class] class

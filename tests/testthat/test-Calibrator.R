@@ -83,10 +83,16 @@ test_that("CalibratorBeta", {
   colnames(calibration_data) = c("truth", "response")
   calibration_data$response = as.numeric(calibration_data$response)
 
+  task_for_calibrator = as_task_classif(calibration_data,
+                                        target = "truth",
+                                        positive = task$positive,
+                                        id = "Task_cal")
+
   # Create Calibrator
-  calib_beta = CalibratorBeta$new(calibration_data, task_test, parameters = "ab")
+  calib_beta = CalibratorBeta$new(parameters = "ab")
+  calib_beta$train(task_for_calibrator)
   # Predict with Calibrator
-  pred_calibrated = calib_beta$predict(calibration_data, task_test)
+  pred_calibrated = calib_beta$predict(task_for_calibrator)
   checkmate::expect_numeric(mean(pred_calibrated$prob[,1]))
 })
 

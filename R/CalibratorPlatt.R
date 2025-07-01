@@ -38,7 +38,6 @@ CalibratorPlatt = R6::R6Class("CalibratorPlatt",
                                  .calibrator = NULL,
 
                                  .train = function(task) {
-                                   positive = task$positive
                                    # For example, fit a logistic regression model
                                    private$.calibrator$train(task)
                                  },

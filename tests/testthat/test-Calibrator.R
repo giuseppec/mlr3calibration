@@ -49,10 +49,16 @@ test_that("CalibratorIsotonic", {
 
   colnames(calibration_data) = c("truth", "response")
   calibration_data$response = as.numeric(calibration_data$response)
+
+  task_for_calibrator = as_task_classif(calibration_data,
+                                        target = "truth",
+                                        positive = task$positive,
+                                        id = "Task_cal")
   # Create Calibrator
-  calib_isotonic = CalibratorIsotonic$new(calibration_data, task_test)
+  calib_isotonic = CalibratorIsotonic$new()
+  calib_isotonic$train(task_for_calibrator)
   # Predict with Calibrator
-  pred_calibrated = calib_isotonic$predict(calibration_data, task_test)
+  pred_calibrated = calib_isotonic$predict(task_for_calibrator)
   checkmate::expect_numeric(mean(pred_calibrated$prob[,1]))
 })
 

@@ -114,13 +114,20 @@ test_that("CalibratorDictionary", {
                                 response = with(pred_data,
                                                 get(paste0("prob.", positive))))
 
+
   colnames(calibration_data) = c("truth", "response")
   calibration_data$response = as.numeric(calibration_data$response)
 
+  task_for_calibrator = as_task_classif(calibration_data,
+                                        target = "truth",
+                                        positive = task$positive,
+                                        id = "Task_cal")
+
 
   # Calibrator
-  cal <- create_calibrator("isotonic", calibration_data, task)
-  pred_calibrated = cal$predict(calibration_data, task_test)
+  cal <- clb("platt")
+  cal$train(task_for_calibrator)
+  pred_calibrated = cal$predict(task_for_calibrator)
 
   checkmate::expect_numeric(mean(pred_calibrated$prob[,1]))
 })

@@ -7,7 +7,8 @@
 #' @description
 #' Creates a new instance of this [R6][R6::R6Class] class
 #' @param task contains the calibration task with two columns truth and response target is truth and positive is the positive of original task
-
+#' @include aaa.R
+#'
 CalibratorPlatt = R6::R6Class("CalibratorPlatt",
                                inherit = LearnerClassif,
 

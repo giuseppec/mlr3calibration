@@ -7,8 +7,8 @@ test_that("platt", {
   task_test = task$clone()$filter(splits$test)
 
   # Train
-  learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
-                            method = "platt"))
+  learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
+                            method = "platt", rsmp = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -26,9 +26,9 @@ test_that("beta", {
   learner <- lrn("classif.rpart", predict_type = "prob")
 
   # Train
-  learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
+  learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
                                                   method = "beta",
-                                                  parameters = "ab"))
+                                                  parameters = "ab", rsmp = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -46,8 +46,8 @@ test_that("isotonic", {
   task_test = task$clone()$filter(splits$test)
 
   # Isotonic
-  learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
-                                                  method = "isotonic"))
+  learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
+                                                  method = "isotonic", rsmp = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 

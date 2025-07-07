@@ -13,7 +13,7 @@ is implemented by
 - CalibratorIsotonic
 - CalibratorBeta
 
-what is still to do
+what is still to do --> done (04.07.2025)
 
 - create a dictionary?
 - refactor the code using these calibrators
@@ -25,11 +25,11 @@ New ideas
 - Calibrators should inherit from learner (example s. https://github.com/mlr-org/mlr3learners/blob/main/R/LearnerClassifLogReg.R)
 - Calibrator lives in a Calibrator dict, similar to here (https://github.com/mlr-org/mlr3data/blob/main/R/zzz.R)
 
+# 2. Unifiy per fold, OOF, TuneFirst approaches
+
 - open questions:
   - how does autotuner help in OOF, PerFold?? - not used yet
   - what do we do with rr object (usual learner does only take resampling --> rename resampling)
-
-# 2. Unifiy per fold, OOF, TuneFirst approaches
 
 << interface>>
 CalibrationStrategy

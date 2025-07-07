@@ -3,6 +3,7 @@
 #' @description
 #' Out-of-fold Pipeline operator for calibrating classification learner using different calibration methods.
 #' Supports Platt scaling, isotonic regression, and beta calibration.
+#' Further own scalings can be implemented
 #'
 #' @param learner [`Learner`][mlr3::Learner]\cr Base learner to be calibrated. predict_type has to be `"prob"`.
 #' @param method `character(1)`\cr Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
@@ -119,25 +120,16 @@ PipeOpCalibrationOOF <- R6::R6Class(
       #pred_data = as.data.table(pred)
       calibration_data = data.table(truth = pred_data$truth,
         response = with(pred_data, get(paste0("prob.", positive))))
-
       colnames(calibration_data) = c("truth", "response")
       calibration_data$response = as.numeric(calibration_data$response)
+      task_for_calibrator = as_task_classif(calibration_data,
+                                            target = "truth",
+                                            positive = positive,
+                                            id = "task_cal")
 
-      if (self$method == "platt") {
-        task_for_calibrator = as_task_classif(calibration_data, target = "truth",
-          positive = positive, id = "Task_cal")
-        self$calibrator = lrn("classif.log_reg", predict_type = "prob")
-        self$calibrator$train(task_for_calibrator)
-      } else if (self$method == "isotonic") {
-        calibration_data$truth <- ifelse(calibration_data$truth == positive, 1, 0)
-        self$calibrator = as.stepfun(stats::isoreg(x = calibration_data$response,
-          y = calibration_data$truth))
-      } else if (self$method == "beta") {
-        calibration_data$truth <- ifelse(calibration_data$truth == positive, 1, 0)
-        self$calibrator = betacal::beta_calibration(p = calibration_data$response,
-          y = calibration_data$truth,
-          parameters = self$parameters)
-      }
+      self$calibrator <- clb(self$method)
+      self$calibrator$train(task_for_calibrator)
+
       return(list(NULL))
     },
 
@@ -165,41 +157,18 @@ PipeOpCalibrationOOF <- R6::R6Class(
         response = response
       )
       pred_uncal = as.data.table(pred_uncal)
-      calibration_data = data.table(truth = task$truth(),
-        response = with(pred_uncal, get(paste0("prob.", positive))))
+
+      calibration_data = data.table(truth = pred_uncal$truth,
+                                    response = with(pred_uncal, get(paste0("prob.", positive))))
       colnames(calibration_data) = c("truth", "response")
       calibration_data$response = as.numeric(calibration_data$response)
+      task_for_calibrator = as_task_classif(calibration_data,
+                                            target = "truth",
+                                            positive = positive,
+                                            id = "task_cal")
 
-      if (self$method == "platt") {
-        task_for_calibrator = as_task_classif(calibration_data, target = "truth",
-          positive = positive, id = "Task_cal")
-        pred_calibrated = self$calibrator$predict(task_for_calibrator)
-      } else if (self$method == "isotonic") {
-        pred_calibrated = self$calibrator(calibration_data$response)
-        prob = as.matrix(data.frame(pred_calibrated, 1 - pred_calibrated))
-        colnames(prob) = c(task$positive, task$negative)
-        response = ifelse(pred_calibrated < 0.5, task$negative, task$positive)
-        pred_calibrated = PredictionClassif$new(
-          task = task,
-          row_ids = task$row_ids,
-          truth = task$truth(),
-          prob = prob,
-          response = response
-        )
-      } else if (self$method == "beta") {
-        pred_calibrated = betacal::beta_predict(calibration_data$response,
-          self$calibrator)
-        prob = as.matrix(data.frame(pred_calibrated, 1 - pred_calibrated))
-        colnames(prob) = c(task$positive, task$negative)
-        response = ifelse(pred_calibrated < 0.5, task$negative, task$positive)
-        pred_calibrated = PredictionClassif$new(
-          task = task,
-          row_ids = task$row_ids,
-          truth = task$truth(),
-          prob = prob,
-          response = response
-        )
-      }
+      pred_calibrated = self$calibrator$predict(task_for_calibrator)
+
       return(list(pred_calibrated))
     },
 

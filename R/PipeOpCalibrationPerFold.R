@@ -139,35 +139,20 @@ PipeOpCalibrationPerFold <- R6::R6Class(
 
       for (pred in preds) {
         pred_data = as.data.table(pred)
-        calibration_data = data.table(truth = pred_data$truth,
-          response = with(pred_data,
-            get(paste0("prob.", positive))))
 
+        calibration_data = data.table(truth = pred_data$truth,
+                                      response = with(pred_data, get(paste0("prob.", positive))))
         colnames(calibration_data) = c("truth", "response")
         calibration_data$response = as.numeric(calibration_data$response)
-# TODO make more methods possible
-        if (self$method == "platt") {
-          task_for_calibrator = as_task_classif(calibration_data,
-            target = "truth",
-            positive = positive,
-            id = "Task_cal")
-          calibrator = lrn("classif.log_reg", predict_type = "prob")
-          calibrator$train(task_for_calibrator)
-          self$calibrators[[length(self$calibrators) + 1]] = calibrator
-        } else if (self$method == "isotonic") {
-          calibration_data$truth <- ifelse(calibration_data$truth == positive,
-            1, 0)
-          calibrator = as.stepfun(stats::isoreg(x = calibration_data$response,
-            y = calibration_data$truth))
-          self$calibrators[[length(self$calibrators) + 1]] = calibrator
-        } else if (self$method == "beta") {
-          calibration_data$truth <- ifelse(calibration_data$truth == positive,
-            1, 0)
-          calibrator = betacal::beta_calibration(p = calibration_data$response,
-            y = calibration_data$truth,
-            parameters = self$parameters)
-          self$calibrators[[length(self$calibrators) + 1]] = calibrator
-        }
+        task_for_calibrator = as_task_classif(calibration_data,
+                                              target = "truth",
+                                              positive = positive,
+                                              id = "task_cal")
+
+        calibrator <- clb(self$method)
+        calibrator$train(task_for_calibrator)
+        self$calibrators[[length(self$calibrators) + 1]] = calibrator
+
       }
       return(list(NULL))
     },
@@ -185,42 +170,14 @@ PipeOpCalibrationPerFold <- R6::R6Class(
             get(paste0("prob.", positive))))
         colnames(calibration_data) = c("truth", "response")
         calibration_data$response = as.numeric(calibration_data$response)
-# TODO
-        if (self$method == "platt") {
-          task_for_calibrator = as_task_classif(calibration_data,
-            target = "truth",
-            positive = positive,
-            id = "Task_cal")
-          pred_calibrated = self$calibrators[[learner_index]]$predict(
-            task_for_calibrator)
-        } else if (self$method == "isotonic") {
-          pred_calibrated = self$calibrators[[learner_index]](
-            calibration_data$response)
-          prob = as.matrix(data.frame(pred_calibrated, 1 - pred_calibrated))
-          colnames(prob) = c(task$positive, task$negative)
-          response = ifelse(pred_calibrated < 0.5, task$negative,
-            task$positive)
-          pred_calibrated = PredictionClassif$new(
-            task = task,
-            row_ids = task$row_ids,
-            truth = task$truth(),
-            prob = prob,
-            response = response
-          )
-        } else if (self$method == "beta") {
-          pred_calibrated = betacal::beta_predict(calibration_data$response,
-            self$calibrators[[learner_index]])
-          prob = as.matrix(data.frame(pred_calibrated, 1 - pred_calibrated))
-          colnames(prob) = c(task$positive, task$negative)
-          response = ifelse(pred_calibrated < 0.5, task$negative, task$positive)
-          pred_calibrated = PredictionClassif$new(
-            task = task,
-            row_ids = task$row_ids,
-            truth = task$truth(),
-            prob = prob,
-            response = response
-          )
-        }
+        task_for_calibrator = as_task_classif(calibration_data,
+                                              target = "truth",
+                                              positive = positive,
+                                              id = "task_cal")
+
+        pred_calibrated = self$calibrators[[learner_index]]$predict(
+          task_for_calibrator)
+
         predictions[[length(predictions) + 1]] = as.data.table(pred_calibrated)
       }
 

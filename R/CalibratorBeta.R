@@ -45,6 +45,7 @@ CalibratorBeta = R6::R6Class("CalibratorBeta",
                                 .calibrator = NULL,
 
                                 .train = function(task) {
+                                  # TODO: needs to handle probabilities 0, 1
                                   data <- task$data()
                                   parameters <- self$param_set$values$parameters
                                   data$truth <- ifelse(data$truth == task$positive,

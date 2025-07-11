@@ -8,6 +8,11 @@ register_calibrator = function(name, calibrator){
 }
 
 
-clb = function(name){
-  return(mlr3_calibrators$get(name))
+#clb = function(name){
+  #return(mlr3_calibrators$get(name))
+#}
+
+
+clb = function(.key, ...) {
+  mlr3misc::dictionary_sugar_get(dict = mlr3_calibrators, .key, ...)
 }

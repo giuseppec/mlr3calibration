@@ -50,6 +50,7 @@ CalibratorBeta = R6::R6Class("CalibratorBeta",
                                   parameters <- self$param_set$values$parameters
                                   data$truth <- ifelse(data$truth == task$positive,
                                                        1, 0)
+                                  # try catch und als fallback "ab" statt "abm" + exception message
                                   private$.calibrator = betacal::beta_calibration(p = data$response,
                                                                          y = data$truth,
                                                                          parameters = parameters)

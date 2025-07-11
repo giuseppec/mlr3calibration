@@ -100,10 +100,9 @@ PipeOpCalibrationPerFold <- R6::R6Class(
       if (self$learner$predict_type != "prob") {
         stop("predict_type has to be 'prob'")
       }
+
       self$method = method
-      self$parameters = parameters
-      self$learners = list()
-      self$calibrators = list()
+
       super$initialize(id = self$learner$base_learner()$id,
         param_set = alist(self$learner$param_set),
         param_vals = param_vals,
@@ -112,6 +111,10 @@ PipeOpCalibrationPerFold <- R6::R6Class(
         output = data.table(name = "output", train = "NULL",
           predict = "PredictionClassif")
       )
+
+      self$parameters = parameters
+      self$learners = list()
+      self$calibrators = list()
     }
   ),
   active = list(

@@ -80,14 +80,17 @@ test_that("platt", {
 })
 
 test_that("beta", {
+  set.seed(5)
   data("Sonar", package = "mlbench")
   task = as_task_classif(Sonar, target = "Class", positive = "M")
   splits = partition(task)
   task_train = task$clone()$filter(splits$train)
   task_test = task$clone()$filter(splits$test)
-  learner <- lrn("classif.kknn", predict_type = "prob") #TODO make it work for "classif.rpart"
+  learner <- lrn("classif.rpart", predict_type = "prob") #TODO make it work for "classif.rpart"
 
   # Train
+  # Problems: parameter is set "abm" even if we pass "ab"
+  # install try catch for beta error (seed(5))
   learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
                                                      method = "beta",
                                                      parameters = "ab", rsmp = rsmp("cv", folds = 5)))

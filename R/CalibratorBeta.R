@@ -52,9 +52,26 @@ CalibratorBeta = R6::R6Class("CalibratorBeta",
                                                        1, 0)
 
                                   # try catch und als fallback "ab" statt "abm" + exception message
-                                  private$.calibrator = betacal::beta_calibration(p = data$response,
-                                                                         y = data$truth,
-                                                                         parameters = parameters)
+
+                                  tryCatch({
+                                    private$.calibrator = betacal::beta_calibration(
+                                      p = data$response,
+                                      y = data$truth,
+                                      parameters = parameters
+                                    )
+                                  }, error = function(e) {
+                                    if (grepl("f\\(\\) values at end points not of opposite sign", e$message)) {
+                                      warning("beta_calibration failed: uniroot endpoint sign mismatch.")
+                                      private$.calibrator = betacal::beta_calibration(
+                                        p = data$response,
+                                        y = data$truth,
+                                        parameters = "ab"
+                                      )
+                                    } else {
+                                      stop(e)  # re-throw other errors
+                                    }
+                                  })
+
                                 },
 
                                 .predict = function(task) {

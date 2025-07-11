@@ -39,6 +39,7 @@ test_that("beta", {
   checkmate::expect_numeric(mean(preds$prob[,1]))
 })
 
+
 test_that("isotonic", {
   data("Sonar", package = "mlbench")
   task = as_task_classif(Sonar, target = "Class", positive = "M")
@@ -94,6 +95,29 @@ test_that("beta", {
   learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
                                                      method = "beta",
                                                      parameters = "ab", rsmp = rsmp("cv", folds = 5)))
+  learner_cal$train(task_train)
+  checkmate::expect_numeric(learner_cal$state$train_time)
+
+  # Predict
+  preds = learner_cal$predict(task_test)
+  checkmate::expect_numeric(mean(preds$prob[,1]))
+})
+
+test_that("beta", {
+  set.seed(5)
+  data("Sonar", package = "mlbench")
+  task = as_task_classif(Sonar, target = "Class", positive = "M")
+  splits = partition(task)
+  task_train = task$clone()$filter(splits$train)
+  task_test = task$clone()$filter(splits$test)
+  learner <- lrn("classif.rpart", predict_type = "prob") #TODO make it work for "classif.rpart"
+
+  # Train
+  # Problems: parameter is set "abm" even if we pass "ab"
+  # install try catch for beta error (seed(5))
+  learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
+                                                         method = "beta",
+                                                         parameters = "abm", rsmp = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 

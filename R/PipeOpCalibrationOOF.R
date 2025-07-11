@@ -72,7 +72,7 @@ PipeOpCalibrationOOF <- R6::R6Class(
       learner,
       method = "platt",
       rsmp,
-      parameters = "abm",
+      parameters = NULL,
       param_vals = list()) {
       self$learner = learner
       self$method = method
@@ -127,7 +127,12 @@ PipeOpCalibrationOOF <- R6::R6Class(
                                             positive = positive,
                                             id = "task_cal")
 
-      self$calibrator <- clb(self$method)
+      if(is.null(self$parameters)){
+        calibrator <- clb(self$method)
+      }else{
+        calibrator <- clb(self$method, self$parameters)
+      }
+      self$calibrator = calibrator
       self$calibrator$train(task_for_calibrator)
 
       return(list(NULL))

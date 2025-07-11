@@ -74,7 +74,7 @@ PipeOpCalibrationPerFold <- R6::R6Class(
       method = "platt",
       rsmp = NULL,
       rr = NULL,
-      parameters = "abm",
+      parameters = NULL,
       param_vals = list()) {
 
       if (is.null(learner) && is.null(rr)) {
@@ -151,8 +151,11 @@ PipeOpCalibrationPerFold <- R6::R6Class(
                                               target = "truth",
                                               positive = positive,
                                               id = "task_cal")
-
-        calibrator <- clb(self$method)
+        if(is.null(self$parameters)){
+          calibrator <- clb(self$method)
+        }else{
+          calibrator <- clb(self$method, self$parameters)
+        }
         calibrator$train(task_for_calibrator)
         self$calibrators[[length(self$calibrators) + 1]] = calibrator
 

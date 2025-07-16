@@ -77,7 +77,7 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
       method    = "platt",
       rsmp      = NULL,
       rr        = NULL,
-      parameters = "abm",
+      parameters = NULL,
       param_vals = list()) {
 
       if (is.null(learner) && is.null(rr))
@@ -137,30 +137,28 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
       oof_preds     <- lapply(rr$predictions("test"), as.data.table)
       oof_dt        <- data.table::rbindlist(oof_preds, use.names = TRUE)
 
-      calib_dt <- data.table(
+
+      calibration_data <- data.table(
         truth    = oof_dt$truth,
         response = as.numeric(oof_dt[[paste0("prob.", positive)]])
       )
+      colnames(calibration_data) = c("truth", "response")
+      calibration_data$response = as.numeric(calibration_data$response)
+      task_for_calibrator = as_task_classif(calibration_data,
+                                            target = "truth",
+                                            positive = positive,
+                                            id = "task_cal")
 
       ## ── 3. fit single calibrator ───────────────────────────────────────────
-      if (self$method == "platt") {
-        task_cal <- as_task_classif(calib_dt, target = "truth",
-          positive = positive, id = "Task_cal")
-        self$calibrator <- lrn("classif.log_reg", predict_type = "prob")
-        self$calibrator$train(task_cal)
-
-      } else if (self$method == "isotonic") {
-        calib_dt$truth <- as.integer(calib_dt$truth == positive)
-        self$calibrator <- as.stepfun(stats::isoreg(calib_dt$response,
-          calib_dt$truth))
-
-      } else if (self$method == "beta") {
-        calib_dt$truth <- as.integer(calib_dt$truth == positive)
-        self$calibrator <- betacal::beta_calibration(
-          p          = calib_dt$response,
-          y          = calib_dt$truth,
-          parameters = self$parameters)
+      if(is.null(self$parameters)){
+        calibrator <- clb(self$method)
+      }else{
+        calibrator <- clb(self$method, self$parameters)
       }
+
+      calibrator$train(task_for_calibrator)
+      self$calibrator = calibrator
+
 
       list(NULL)
     },
@@ -176,20 +174,14 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
         as.numeric(p[[paste0("prob.", positive)]])))
       prob_neg <- 1 - prob_pos
 
-      ## apply global calibrator
-      if (self$method == "platt") {
-        task_cal  <- as_task_classif(data.table(response = prob_pos,
-          truth    = task$truth()),
-          target = "truth", positive = positive)
-        prob_pos <- as.numeric(self$calibrator$predict(task_cal)$prob[, positive])
+      task_for_calibration  <- as_task_classif(data.table(response = prob_pos,
+                                              truth    = task$truth()),
+                                   target = "truth", positive = positive,
+                                   id = "task_cal")
 
-      } else if (self$method == "isotonic") {
-        prob_pos <- self$calibrator(prob_pos)
+      prob_pos = self$calibrator$predict(task_for_calibration)
+      prob_neg = 1- prob_pos
 
-      } else if (self$method == "beta") {
-        prob_pos <- betacal::beta_predict(prob_pos, self$calibrator)
-      }
-      prob_neg <- 1 - prob_pos
       response <- ifelse(prob_pos > 0.5, positive, task$negative)
 
       prob = cbind(prob_pos, prob_neg)

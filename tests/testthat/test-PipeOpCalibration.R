@@ -273,7 +273,7 @@ test_that("beta", {
 
   # Train
   learner_cal <- as_learner(PipeOpCalibrationTuneFirstOOF$new(learner = at,
-                                                              method = "beta", params = "ab", rsmp = rsmp("cv", folds = 5)))
+                                                              method = "beta", parameters = "abm", rsmp = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 

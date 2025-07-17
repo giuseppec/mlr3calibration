@@ -179,7 +179,7 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
                                    target = "truth", positive = positive,
                                    id = "task_cal")
 
-      prob_pos = self$calibrator$predict(task_for_calibration)
+      prob_pos = as.numeric(self$calibrator$predict(task_for_calibration)$prob[, positive])
       prob_neg = 1- prob_pos
 
       response <- ifelse(prob_pos > 0.5, positive, task$negative)

@@ -78,3 +78,11 @@ Your base learner (classif.rpart, i.e., decision tree) gave hard 0 or 1 probabil
 Then, PipeOpCalibration tried to calibrate these using a logistic regression model.
 But logistic regression struggles when the inputs are already extreme (close to 0/1), because there's no useful gradient to learn from.
 
+## autotuner in TuneFirst approach
+
+for tune first, we need to pass an auto tuner, simple learner is not supported
+
+- in OOF we enforce this
+- in inFold, we don't, that is why I removed at$learner
+
+--> How do we want to handle it?

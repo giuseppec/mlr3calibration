@@ -7,13 +7,13 @@
 #' @param learner [`Learner`][mlr3::Learner]\cr auto tuner learner to be calibrated. predict_type has to be `"prob"`.
 #' @param rr [`ResampleResult`][mlr3::ResampleResult]\cr Resample result object, either that or learner has to be provided.
 #' @param method `character(1)`\cr Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
-#' @param rsmp [`Resampling`][mlr3::Resampling]\cr Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
+#' @param resampling [`Resampling`][mlr3::Resampling]\cr Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
 #' @param parameters `character(1)`\cr Parameters for beta calibration. Default is `"abm"`.
 #' @param param_vals `list`\cr param_vals, copied from base learner
 #'
 #' @field learner [`Learner`][mlr3::Learner]\cr Base learner to be calibrated.
 #' @field method `character(1)`\cr Calibration method used.
-#' @field rsmp [`Resampling`][mlr3::Resampling]\cr Resampling strategy.
+#' @field resampling [`Resampling`][mlr3::Resampling]\cr Resampling strategy.
 #' @field learners `list`\cr List of learners obtained from resampling.
 #' @field calibrators `list`\cr List of calibrator models.
 #' @field rr [`ResampleResult`][mlr3::ResampleResult]\cr Resample result object.
@@ -36,14 +36,14 @@
 #' learner_uncal <- lrn("classif.ranger", predict_type = "prob")
 #'
 #' # Initialize the calibrated learner
-#' rsmp <- rsmp("cv", folds = 5)
+#' resampling <- rsmp("cv", folds = 5)
 #' at <- auto_tuner(tuner = tnr("random_search"),
 #'  learner = learner_uncal,
 #'  resampling = rsmp("cv", folds = 2),
 #'  measure = msr("classif.bbrier"),
 #'  term_evals = 10)
 #' learner_cal <- as_learner(PipeOpCalibrationTuneFirst$new(
-#'  learner = at, rsmp = rsmp, method = "platt"))
+#'  learner = at, resampling = rsmp, method = "platt"))
 #'
 #' # Set ID's for the learners
 #' learner_cal$id <- "Calibrated Learner"
@@ -60,7 +60,7 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
   public = list(
     learner = NULL,
     method = NULL,
-    rsmp = NULL, # rename in resampling
+    resampling = NULL, # rename in resampling
     learners = NULL,
     calibrators = NULL,
     rr = NULL,
@@ -72,13 +72,13 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
     #'   Tuner that produces a probability learner (`predict_type == "prob"`).
     #' @param rr Resample result object, if provided.
     #' @param method Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
-    #' @param rsmp Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
+    #' @param resampling Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
     #' @param parameters Parameters for beta calibration. Default is `"abm"`.
     #' @param param_vals param_vals, copied from base learner
     initialize = function(#id = "Calibrated",
       learner = NULL,
       method = "platt",
-      rsmp = NULL,
+      resampling = NULL,
       rr = NULL,
       parameters = NULL,
       param_vals = list()) {
@@ -97,10 +97,10 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
       }else{
         self$learner = self$rr$learners[[1]]$clone()
       }
-      if (!is.null(rsmp)) {
-        self$rsmp = rsmp
-      }else if (is.null(rsmp) && is.null(rr)){
-        self$rsmp = rsmp("cv", folds = 5)
+      if (!is.null(resampling)) {
+        self$resampling = resampling
+      }else if (is.null(resampling) && is.null(rr)){
+        self$resampling = rsmp("cv", folds = 5)
       }
       if (self$learner$predict_type != "prob"){
         stop("predict_type has to be 'prob'")
@@ -138,9 +138,9 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
       at$train(task)
 
       if(is.null(self$rr)){
-        #rr = resample(task, at$learner, self$rsmp, store_models = TRUE)
+        #rr = resample(task, at$learner, self$resampling, store_models = TRUE)
         # TODO is this correct?
-        rr = resample(task, at$learner, self$rsmp, store_models = TRUE)
+        rr = resample(task, at$learner, self$resampling, store_models = TRUE)
       }else{
         rr = self$rr
       }

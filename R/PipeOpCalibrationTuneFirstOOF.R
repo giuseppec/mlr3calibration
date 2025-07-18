@@ -21,7 +21,7 @@
 #'   Optional pre-computed result; skips the internal resampling step.
 #' @param method `character(1)`\cr
 #'   Calibration method. One of `"platt"`, `"isotonic"`, `"beta"`.
-#' @param rsmp [`Resampling`][mlr3::Resampling]\cr
+#' @param resampling [`Resampling`][mlr3::Resampling]\cr
 #'   Outer resampling scheme for OOF predictions (default `rsmp("cv", folds = 5)`).
 #' @param parameters `character(1)`\cr
 #'   Parameterisation for beta-calibration (`"abm"` by default).
@@ -31,7 +31,7 @@
 #' @field learner      Tuned base learner (`LearnerClassif`).
 #' @field calibrator   Fitted calibration model (single object).
 #' @field learners     List of OOF base learners (size *K*).
-#' @field rsmp         Resampling used for OOF generation.
+#' @field resampling         Resampling used for OOF generation.
 #'
 #' @examples
 #' \donttest{
@@ -67,7 +67,7 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
   public = list(
     learner     = NULL,
     method      = NULL,
-    rsmp        = NULL,
+    resampling        = NULL,
     learners    = NULL,
     calibrator  = NULL,
     rr          = NULL,
@@ -75,7 +75,7 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
 
     initialize = function(learner   = NULL,
       method    = "platt",
-      rsmp      = NULL,
+      resampling      = NULL,
       rr        = NULL,
       parameters = NULL,
       param_vals = list()) {
@@ -94,7 +94,7 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
         self$learner <- self$rr$learners[[1]]$clone()
       }
 
-      self$rsmp <- rsmp("cv", folds = 5)
+      self$resampling <- rsmp("cv", folds = 5)
       self$method     <- method
       self$parameters <- parameters
       self$learners   <- list()
@@ -130,7 +130,7 @@ PipeOpCalibrationTuneFirstOOF <- R6::R6Class(
 
       ## ── 2. obtain OOF predictions ──────────────────────────────────────────
       rr <- if (is.null(self$rr)) {
-        resample(task, tuned_learner, self$rsmp, store_models = TRUE)
+        resample(task, tuned_learner, self$resampling, store_models = TRUE)
       } else self$rr
 
       self$learners <- rr$learners                       # K fitted models

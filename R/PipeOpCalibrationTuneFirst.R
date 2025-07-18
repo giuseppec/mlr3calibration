@@ -68,7 +68,8 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
 
     #' @description
     #' Creates a new `PipeOpCalibrationPerFold` object.
-    #' @param learner Base learner to be calibrated. predict_type has to be `"prob"`.
+    #' @param learner [`AutoTuner`]\cr
+    #'   Tuner that produces a probability learner (`predict_type == "prob"`).
     #' @param rr Resample result object, if provided.
     #' @param method Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
     #' @param rsmp Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
@@ -89,6 +90,8 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
         self$rr = rr
       }
       if (!is.null(learner)) {
+        if (!inherits(learner, "AutoTuner"))
+          stop("'learner' must be an AutoTuner.")
         self$learner = learner$clone()
         id = self$learner$base_learner()$id
       }else{
@@ -137,7 +140,7 @@ PipeOpCalibrationTuneFirst <- R6::R6Class(
       if(is.null(self$rr)){
         #rr = resample(task, at$learner, self$rsmp, store_models = TRUE)
         # TODO is this correct?
-        rr = resample(task, at, self$rsmp, store_models = TRUE)
+        rr = resample(task, at$learner, self$rsmp, store_models = TRUE)
       }else{
         rr = self$rr
       }

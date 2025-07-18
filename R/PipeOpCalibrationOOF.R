@@ -6,6 +6,8 @@
 #' Further own scalings can be implemented
 #'
 #' @param learner [`Learner`][mlr3::Learner]\cr Base learner to be calibrated. predict_type has to be `"prob"`.
+#' @param rr [`ResampleResult`][mlr3::ResampleResult]\cr
+#'   Optional pre-computed result; skips the internal resampling step.
 #' @param method `character(1)`\cr Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
 #' @param resampling [`Resampling`][mlr3::Resampling]\cr Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
 #' @param parameters `character(1)`\cr Parameters for beta calibration. Default is `"abm"`.
@@ -60,10 +62,13 @@ PipeOpCalibrationOOF <- R6::R6Class(
     learners = NULL,
     calibrator = NULL,
     parameters = NULL,
+    rr = NULL,
 
     #' @description
     #' Creates a new `PipeOpCalibrationPerFold` object.
     #' @param learner Base learner to be calibrated. predict_type has to be `"prob"`.
+    #' @param rr [`ResampleResult`][mlr3::ResampleResult]\cr
+    #'   Optional pre-computed result; skips the internal resampling step.
     #' @param method Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
     #' @param resampling Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
     #' @param parameters Parameters for beta calibration. Default is `"abm"`.
@@ -72,8 +77,10 @@ PipeOpCalibrationOOF <- R6::R6Class(
       learner,
       method = "platt",
       resampling,
+      rr = NULL,
       parameters = NULL,
       param_vals = list()) {
+      if (!is.null(rr)) self$rr <- rr
       self$learner = learner
       self$method = method
       self$resampling = resampling
@@ -107,8 +114,9 @@ PipeOpCalibrationOOF <- R6::R6Class(
       task = inputs[[1]]
       positive = task$positive
 
-
-      rr = resample(task, self$learner, self$resampling, store_models = TRUE)
+      rr <- if (is.null(self$rr)) {
+        resample(task, self$learner, self$resampling, store_models = TRUE)
+      } else self$rr
       self$learners = rr$learners
 
       preds = rr$predictions(predict_sets = "test")

@@ -7,13 +7,13 @@
 #'
 #' @param learner [`Learner`][mlr3::Learner]\cr Base learner to be calibrated. predict_type has to be `"prob"`.
 #' @param method `character(1)`\cr Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
-#' @param rsmp [`Resampling`][mlr3::Resampling]\cr Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
+#' @param resampling [`Resampling`][mlr3::Resampling]\cr Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
 #' @param parameters `character(1)`\cr Parameters for beta calibration. Default is `"abm"`.
 #' @param param_vals `list`\cr param_vals, copied from base learner
 #'
 #' @field learner [`Learner`][mlr3::Learner]\cr Base learner to be calibrated.
 #' @field method `character(1)`\cr Calibration method used.
-#' @field rsmp [`Resampling`][mlr3::Resampling]\cr Resampling strategy.
+#' @field resampling [`Resampling`][mlr3::Resampling]\cr Resampling strategy.
 #' @field learners `list`\cr List of learners obtained from resampling.
 #' @field calibrator `list`\cr List of calibrator models.
 #' @field parameters `character(1)`\cr Parameters for beta calibration.
@@ -35,10 +35,10 @@
 #' learner_uncal <- lrn("classif.ranger", predict_type = "prob")
 #'
 #' # Initialize the calibrated learner
-#' rsmp <- rsmp("cv", folds = 5)
+#' resampling <- rsmp("cv", folds = 5)
 #' learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner_uncal,
 #'                                                 method = "platt",
-#'                                                 rsmp = rsmp))
+#'                                                 resampling = resampling))
 #'
 #' # Set ID's for the learners
 #' learner_cal$id <- "Calibrated Learner"
@@ -56,7 +56,7 @@ PipeOpCalibrationOOF <- R6::R6Class(
   public = list(
     learner = NULL,
     method = NULL,
-    rsmp = NULL,
+    resampling = NULL,
     learners = NULL,
     calibrator = NULL,
     parameters = NULL,
@@ -65,18 +65,18 @@ PipeOpCalibrationOOF <- R6::R6Class(
     #' Creates a new `PipeOpCalibrationPerFold` object.
     #' @param learner Base learner to be calibrated. predict_type has to be `"prob"`.
     #' @param method Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
-    #' @param rsmp Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
+    #' @param resampling Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
     #' @param parameters Parameters for beta calibration. Default is `"abm"`.
     #' @param param_vals param_vals, copied from base learner
     initialize = function(#id = paste0(self$learner$id, ".calibrated_oof_", method),
       learner,
       method = "platt",
-      rsmp,
+      resampling,
       parameters = NULL,
       param_vals = list()) {
       self$learner = learner
       self$method = method
-      self$rsmp = rsmp
+      self$resampling = resampling
       self$learners = list()
       self$parameters = parameters
       super$initialize(id = self$learner$base_learner()$id,
@@ -108,7 +108,7 @@ PipeOpCalibrationOOF <- R6::R6Class(
       positive = task$positive
 
 
-      rr = resample(task, self$learner, self$rsmp, store_models = TRUE)
+      rr = resample(task, self$learner, self$resampling, store_models = TRUE)
       self$learners = rr$learners
 
       preds = rr$predictions(predict_sets = "test")

@@ -10,7 +10,7 @@ test_that("platt", {
 
   # Train
   learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
-                            method = "platt", rsmp = rsmp("cv", folds = 5)))
+                            method = "platt", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -30,7 +30,7 @@ test_that("beta", {
   # Train
   learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
                                                   method = "beta",
-                                                  parameters = "ab", rsmp = rsmp("cv", folds = 5)))
+                                                  parameters = "ab", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -50,7 +50,7 @@ test_that("isotonic", {
 
   # Isotonic
   learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
-                                                  method = "isotonic", rsmp = rsmp("cv", folds = 5)))
+                                                  method = "isotonic", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -71,7 +71,7 @@ test_that("platt", {
 
   # Train
   learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
-                                                     method = "platt", rsmp = rsmp("cv", folds = 5)))
+                                                     method = "platt", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -94,7 +94,7 @@ test_that("beta", {
   # install try catch for beta error (seed(5))
   learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
                                                      method = "beta",
-                                                     parameters = "ab", rsmp = rsmp("cv", folds = 5)))
+                                                     parameters = "ab", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -117,7 +117,7 @@ test_that("beta", {
   # install try catch for beta error (seed(5))
   learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
                                                          method = "beta",
-                                                         parameters = "abm", rsmp = rsmp("cv", folds = 5)))
+                                                         parameters = "abm", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -136,7 +136,7 @@ test_that("isotonic", {
 
   # Isotonic
   learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner,
-                                                     method = "isotonic", rsmp = rsmp("cv", folds = 5)))
+                                                     method = "isotonic", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -179,7 +179,7 @@ test_that("platt", {
 
   # Train
   learner_cal <- as_learner(PipeOpCalibrationTuneFirst$new(learner = at,
-                                                         method = "platt", rsmp = rsmp("cv", folds = 5)))
+                                                         method = "platt", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -214,7 +214,7 @@ test_that("beta", {
   # Train
   learner_cal <- as_learner(PipeOpCalibrationTuneFirst$new(learner = at,
                                                          method = "beta",
-                                                         parameters = "ab", rsmp = rsmp("cv", folds = 5)))
+                                                         parameters = "ab", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -248,7 +248,7 @@ test_that("isotonic", {
 
   # Isotonic
   learner_cal <- as_learner(PipeOpCalibrationTuneFirst$new(learner = at,
-                                                         method = "isotonic", rsmp = rsmp("cv", folds = 5)))
+                                                         method = "isotonic", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -284,7 +284,7 @@ test_that("platt", {
 
   # Train
   learner_cal <- as_learner(PipeOpCalibrationTuneFirstOOF$new(learner = at,
-                                                           method = "platt", rsmp = rsmp("cv", folds = 5)))
+                                                           method = "platt", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -318,7 +318,7 @@ test_that("beta", {
 
   # Train
   learner_cal <- as_learner(PipeOpCalibrationTuneFirstOOF$new(learner = at,
-                                                              method = "beta", parameters = "abm", rsmp = rsmp("cv", folds = 5)))
+                                                              method = "beta", parameters = "abm", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 
@@ -352,7 +352,7 @@ test_that("isotonic", {
 
   # Train
   learner_cal <- as_learner(PipeOpCalibrationTuneFirstOOF$new(learner = at,
-                                                              method = "isotonic", rsmp = rsmp("cv", folds = 5)))
+                                                              method = "isotonic", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 

@@ -31,7 +31,7 @@ New ideas
 # 2. Unifiy per fold, OOF, TuneFirst approaches
 
 - open questions:
-  - how does autotuner help in OOF, PerFold?? - not used yet
+  - DONE how does autotuner help in OOF, PerFold -- we are getting an optimal (tuned first) learner via the autotuner and then predict on this
   - what do we do with rr object (usual learner does only take resampling --> rename resampling)
 
 << interface>>

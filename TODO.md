@@ -32,10 +32,14 @@ New ideas
 
 - open questions:
   - DONE how does autotuner help in OOF, PerFold -- we are getting an optimal (tuned first) learner via the autotuner and then predict on this
-  - what do we do with rr object (usual learner does only take resampling --> rename resampling)
+  - DONE what do we do with rr object (usual learner does only take resampling --> rename resampling)
 
 << interface>>
 CalibrationStrategy
+
+params: learner, rr, method, resampling parameters, param_vals
+BUT: OOF does not have param rr --> DONE
+
 + new()
 + train()
 + predict()
@@ -46,6 +50,11 @@ is implemented by
 - CalibrationStrategyperFold
 - CalibrationStrategyTuneFirstOOF
 - CalibrationStrategyTuneFirstPerFold
+
+idea: glue them together in one interface class, make them accessible via a dictionary as well, have one dictinory
+should they inherit from learner as well? Or from pipeline? --> They already do this
+
+--> We would only need a dictionary with all of them in it
 
 
 

@@ -16,3 +16,13 @@ register_calibrator = function(name, calibrator){
 clb = function(.key, ...) {
   mlr3misc::dictionary_sugar_get(dict = mlr3_calibrators, .key, ...)
 }
+
+mlr3_calibration_pipeops = mlr3misc::Dictionary$new()
+
+register_calibration_pipeop = function(name, calibration_pipeop){
+  mlr3_calibration_pipeops$add(name, calibration_pipeop)
+}
+
+calibPipeOp = function(.key, ...){
+  mlr3misc::dictionary_sugar_get(dict = mlr3_calibration_pipeops, .key, ...)
+}

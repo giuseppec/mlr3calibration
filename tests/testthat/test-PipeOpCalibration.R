@@ -9,8 +9,10 @@ test_that("platt", {
   task_test = task$clone()$filter(splits$test)
 
   # Train
-  learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
-                            method = "platt", resampling = rsmp("cv", folds = 5)))
+  #learner_cal <- as_learner(PipeOpCalibrationOOF$new(learner = learner,
+  #                        method = "platt", resampling = rsmp("cv", folds = 5)))
+  learner_cal <- as_learner(calibPipeOp("calib.oof", learner = learner,
+                                        method = "platt", resampling = rsmp("cv", folds = 5)))
   learner_cal$train(task_train)
   checkmate::expect_numeric(learner_cal$state$train_time)
 

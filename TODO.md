@@ -100,7 +100,7 @@ for tune first, we need to pass an auto tuner, simple learner is not supported
 
 - possibility for own calibration metrics --> does not really need new implementation, maybe rather a dictionary that assigns names
 - Cox calibration slope and intercept
-- HL test
+- HL test --> done
 
 how metrics work
 

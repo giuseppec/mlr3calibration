@@ -37,8 +37,8 @@
 #' # Predict the learner
 #' prediction <- learner_cal$predict(task_test)
 #'
-#' # Calculate the ECE
-#' cox <- prediction$score(cox$new())
+#' # Calculate the cox slope
+#' cox <- prediction$score(cox_slope$new())
 #'
 #' @export
 cox_slope = R6::R6Class("cox_slope",
@@ -53,7 +53,7 @@ cox_slope = R6::R6Class("cox_slope",
                         properties = character(),
                         predict_type = "prob",
                         range = c(-Inf, Inf),
-                        minimize = TRUE
+                        minimize = FALSE
                       )
                     }
                   ),

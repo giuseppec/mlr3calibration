@@ -34,7 +34,7 @@ hltest = R6::R6Class("hltest",
                         properties = character(),
                         predict_type = "prob",
                         range = c(0, 1),
-                        minimize = TRUE
+                        minimize = FALSE
                       )
                     }
                   ),

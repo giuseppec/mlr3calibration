@@ -12,14 +12,16 @@ header-includes:
 ---
 
 # General
-This package is a flexible calibration extension for the mlr3 framework in R. It includes the ability to calibrate objects of type learner, so that they can be trained or predicted as usual. It allows to choose between Platt scaling, Beta calibration and isotonic calibration. In addition, a calibrated learner can either be easily integrated into pipelines or entire pipelines can be calibrated. The calibrated learner can also be initialised by a base learner with tune token, allowing parameter tuning for the calibrated learner.This package also provides the ability to plot the reliability curve for one or more trained learners and a task. Furthermore, this extension provides two calibration measures: the expected calibration error and the integrated calibration index. 
+This package is a flexible calibration extension for the mlr3 framework in R. It includes the ability to calibrate objects of type learner, so that they can be trained or predicted as usual. It allows to choose between Platt scaling, Beta calibration and isotonic calibration. Own Calibrators can be included as well. In addition, a calibrated learner can either be easily integrated into pipelines or entire pipelines can be calibrated. The calibrated learner can also be initialised by a base learner with tune token, allowing parameter tuning for the calibrated learner.This package also provides the ability to plot the reliability curve for one or more trained learners and a task. Furthermore, this extension provides several calibration measures: the expected calibration error, the integrated calibration index, HL-test, Cox Slope and Intercept and Spiegelhalter's Z statistics to measure calibration.
+
 # Installation
 
 You can install the mlr3calibration package from GitHub with the following code:
 
 ```{r installation, message=FALSE, warning=FALSE}
 #remotes::install_github("giuseppec/mlr3calibration")
-library(mlr3calibration)
+# library(mlr3calibration)
+# do devtools::load_all()
 library(mlr3verse)
 ```
 
@@ -44,9 +46,12 @@ learner_uncal <- lrn("classif.xgboost", nrounds = 50, predict_type = "prob")
 
 # Initialize the calibrated learner
 rsmp <- rsmp("cv", folds = 5)
-learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal,
-                                              method = "beta",
-                                              rsmp = rsmp))
+
+learner_cal <- as_learner(calibPipeOp("calib.oof",
+                                      learner = learner_uncal,
+                                      method = "beta",
+                                      parameters = "ab",
+                                      resampling = rsmp))
 
 # Set ID's for the learners
 learner_uncal$id <- "Uncalibrated Learner"
@@ -104,14 +109,17 @@ rsmp <- rsmp("cv", folds = 5)
 rr <- resample(task_train, learner, rsmp, store_models = TRUE)
 
 # Initialze the calibrated learners
-learner_calibrated_platt <- as_learner(PipeOpCalibrationPerFold$new(rr = rr, 
-                                         method = "platt"))
+learner_calibrated_platt <- as_learner(calibPipeOp("calib.perfold",
+                                      rr = rr,
+                                      method = "platt"))
 
-learner_calibrated_beta <- as_learner(PipeOpCalibrationPerFold$new(rr = rr, 
-                                        method = "beta"))
+learner_calibrated_beta <- as_learner(calibPipeOp("calib.perfold",
+                                      rr = rr,
+                                      method = "beta"))
 
-learner_calibrated_isotonic <- as_learner(PipeOpCalibrationPerFold$new(rr = rr,
-                                            method ="isotonic"))
+learner_calibrated_isotonic <- as_learner(calibPipeOp("calib.perfold",
+                                      rr = rr,
+                                      method = "isotonic"))
 
 # Train the calibrated learners
 learner_calibrated_platt$train(task_train)
@@ -130,9 +138,11 @@ It is also possible to calibrate a mlr3 pipeline, or to include an Calibrated Le
 pipeline <- as_learner(po("imputemean") %>>% lrn("classif.ranger", 
                                                  predict_type = "prob"))
 
-learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = pipeline, 
-                                     method = "platt", 
-                                     rsmp = rsmp("cv", folds = 5)))
+learner_cal <- as_learner(calibPipeOp("calib.perfold",
+                        learner = pipeline,
+                        method = "platt",
+                        resampling = rsmp("cv", folds = 5)))
+
 learner_cal$train(task_train)
 ```
 
@@ -140,10 +150,12 @@ learner_cal$train(task_train)
 
 ```{r Include Calibrated Learner in Pipeline, results = "hide", warning=FALSE}
 # Include Calibrated learner in a pipeline
-learner_cal <- PipeOpCalibrationPerFold$new(learner = lrn("classif.ranger", 
-                                                   predict_type="prob"),
-                                     rsmp = rsmp("cv", folds = 5),
-                                     method = "platt")
+
+learner_cal <- as_learner(calibPipeOp("calib.perfold",
+                        learner = lrn("classif.ranger", 
+                                      predict_type="prob"),
+                        method = "platt",
+                        resampling = rsmp("cv", folds = 5)))
 
 pipeline <- as_learner(po("imputemean") %>>% learner_cal)
 
@@ -163,9 +175,12 @@ learner_uncal <- lrn("classif.ranger",
                      mtry = to_tune(1, 10),
                      num.trees = to_tune(100, 500))
 
-learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal,
-                                            method = "platt", 
-                                            rsmp = rsmp("cv", folds=5)))
+
+learner_cal <- as_learner(calibPipeOp("calib.perfold",
+                        learner = learner_uncal,
+                        method = "platt",
+                        resampling = rsmp("cv", folds = 5)))
+
 
 at = auto_tuner(
   tuner = tnr("random_search"),

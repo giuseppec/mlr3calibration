@@ -341,6 +341,41 @@ library(ggplot2)
 calibrationplot(lrns, task_test, smooth = TRUE)
 ```
 
+# More Calibration Measures
+
+## HL-Test
+
+Tests the goodness of calibration for a binary classifier by comparing expected and observed frequencies in data bins.
+A small p-value indicates that the model is poorly calibrated to the data.
+
+```{r}
+preds_uncal = learner_uncal$predict(task_test)
+preds_cal = learner_cal$predict(task_test)
+preds_uncal$score(hltest$new())
+preds_cal$score(hltest$new())
+```
+## Cox Test
+A logistic regression model with log-odds as the independent variable and the outcomemas the dependent variable is fitted. Perfect calibration is indicated by a slope of 1 and intercept of 0. Slope >1 indicates overconfidence at high probabilities and underconfidence at low probabilities, while a slope <1 indicates the opposite. A positive intercept indicates general overconfidence.
+
+```{r}
+preds_uncal = learner_uncal$predict(task_test)
+preds_cal = learner_cal$predict(task_test)
+preds_uncal$score(cox_slope$new())
+preds_cal$score(cox_slope$new())
+```
+
+## Spiegelhalters Z Statistics
+
+Spiegelhalters test compares predicted probabilities to observed outcomes and tests if the model is well calibrated.
+A small p-value (<0.05) indicates bad calibration.
+
+```{r}
+preds_uncal = learner_uncal$predict(task_test)
+preds_cal = learner_cal$predict(task_test)
+preds_uncal$score(spiegelhaltersz$new())
+preds_cal$score(spiegelhaltersz$new())
+```
+
 # Calibration with resample Object
 
 If you want to compare the three calibration approaches with each other, it can be time-consuming to train each calibration approach using cross validation. In these cases, you can train an rr object, store the models and pass it to the PipeOpCalibrationPerFold. This means that the base learner has to be trained once in advance, and only the calibrators have to be trained in the PipeOpCalibrationPerFold using the holdout folds.

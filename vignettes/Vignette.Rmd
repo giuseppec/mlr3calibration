@@ -12,7 +12,7 @@ header-includes:
 ---
 
 # General
-This package is a flexible calibration extension for the mlr3 framework in R. It includes the ability to calibrate objects of type learner, so that they can be trained or predicted as usual. It allows to choose between Platt scaling, Beta calibration and isotonic calibration. Own Calibrators can be included as well. In addition, a calibrated learner can either be easily integrated into pipelines or entire pipelines can be calibrated. The calibrated learner can also be initialised by a base learner with tune token, allowing parameter tuning for the calibrated learner.This package also provides the ability to plot the reliability curve for one or more trained learners and a task. Furthermore, this extension provides several calibration measures: the expected calibration error, the integrated calibration index, HL-test, Cox Slope and Intercept and Spiegelhalter's Z statistics to measure calibration.
+This package is a flexible calibration extension for the mlr3 framework in R. It includes the ability to calibrate objects of type learner, so that they can be trained or predicted as usual. It allows to choose between Platt scaling, Beta calibration and isotonic calibration. Own Calibrators can be included as well. In addition, a calibrated learner can either be easily integrated into pipelines or entire pipelines can be calibrated. The calibrated learner can also be initialized by a base learner with tune token, allowing parameter tuning for the calibrated learner.This package also provides the ability to plot the reliability curve for one or more trained learners and a task. Furthermore, this extension provides several calibration measures: the expected calibration error, the integrated calibration index, HL-test, Cox Slope and Intercept and Spiegelhalter's Z statistics to measure calibration.
 
 # Installation
 
@@ -27,7 +27,7 @@ library(mlr3verse)
 
 # Calibration
 
-To use the mlr3calibration package, we first need a binary classification task
+To use the mlr3calibration package, we first need a binary classification task. mlr3 does not support multiclass calibration yet. One possibility to do multiclass calibration is to calibrate several one-vs.-rest binary tasks.
 ```{r task}
 # Load a binary classification task
 set.seed(1)
@@ -39,6 +39,15 @@ task_test = task$clone()$filter(splits$test)
 ```
 
 To calibrate a learner you need an uncalibrated learner, a resampling strategy and a calibration method (platt, beta or isotonic). To prevent overfitting, calibration can be performed using cross-validation. The dataset is divided into k folds, and each fold is used for calibration once, while the other (k-1) folds are used for training the classifier. If, for example, a holdout resampling strategy is selected, then no cross-validated calibration is performed, but the base learner is trained on the training split and the calibrator on the holdout.
+There are several strategies when to train the calibrator with cross validation:
+- OOF (Out-Of-Fold Calibration) `calib.oof`:
+Train calibration on out-of-fold predictions from cross-validation. Uses all data without leakage.
+- perFold Calibration `calib.perfold`:
+Each fold gets its own calibrator trained only on that fold’s validation predictions. Multiple calibrators exist.
+- OOFTuneFirst `calib.tunefirst.oof`:
+First, tune the base learners hyperparamerters, then calibrate on OOF predictions (global view) using the tuned learner. Needs an AutoTuner as learner object.
+- PerFoldTuneFirst `calib.tunefirst.perfold`:
+First, tune the base learners hyperparamerters, then calibrate on within each fold using the tuned learner. Needs an AutoTuner as learner object.
 
 ```{r calibration, warnings = FALSE}
 # Initialize the uncalibrated learner
@@ -64,7 +73,7 @@ learner_uncal$train(task_train)
 learner_cal$train(task_train)
 ```
 
-It is also possible to implement an own calibrator
+It is also possible to implement an own calibrator as a R6 class. This calibrator can then be added to the calibrator dictionary of this library. Here, we create a calibrator `Platt2` that is equal to `Platt` Calibration.
 
 ```{r}
 # write the calibrator class that inherits from LearnerClassif
@@ -138,7 +147,7 @@ learner_cal$train(task_train)
 We have already seen that a calibrator can be applied to an uncalibrator learner using a pipeline with a calibration strategy (Out-Of-Fold, In-Fold, Tune-First-OOF, Tune-First-In-Fold) and a resampling.
 It is possible to implement an own Pipeline as well.
 
-Imagine we want to do OOF Calibration using Hold-Out-Split as a default. We could write our own pipeline for this:
+Imagine we want to do OOF Calibration using Hold-Out-Split as a default. We could write our own pipeline for this and add it to the Pipeline dictionary of this library:
 
 ```{r}
 PipeOpCalibrationOOFHoldOut <- R6::R6Class(
@@ -211,11 +220,8 @@ PipeOpCalibrationOOFHoldOut <- R6::R6Class(
 
       preds = rr$predictions(predict_sets = "test")
       preds = lapply(preds, as.data.table)
-      # TODO: do not use dplyr functions
-      #pred = bind_rows(preds)
       pred_data = data.table::rbindlist(preds, use.names = TRUE)
 
-      #pred_data = as.data.table(pred)
       calibration_data = data.table(truth = pred_data$truth,
         response = with(pred_data, get(paste0("prob.", positive))))
       colnames(calibration_data) = c("truth", "response")
@@ -355,7 +361,7 @@ preds_uncal$score(hltest$new())
 preds_cal$score(hltest$new())
 ```
 ## Cox Test
-A logistic regression model with log-odds as the independent variable and the outcomemas the dependent variable is fitted. Perfect calibration is indicated by a slope of 1 and intercept of 0. Slope >1 indicates overconfidence at high probabilities and underconfidence at low probabilities, while a slope <1 indicates the opposite. A positive intercept indicates general overconfidence.
+A logistic regression model with log-odds as the independent variable and the outcome as the dependent variable is fitted. Perfect calibration is indicated by a slope of 1 and intercept of 0. Slope >1 indicates overconfidence at high probabilities and underconfidence at low probabilities, while a slope <1 indicates the opposite. A positive intercept indicates general overconfidence.
 
 ```{r}
 preds_uncal = learner_uncal$predict(task_test)
@@ -366,7 +372,7 @@ preds_cal$score(cox_slope$new())
 
 ## Spiegelhalters Z Statistics
 
-Spiegelhalters test compares predicted probabilities to observed outcomes and tests if the model is well calibrated.
+Spiegelhalter's test compares predicted probabilities to observed outcomes and tests if the model is well calibrated.
 A small p-value (<0.05) indicates bad calibration.
 
 ```{r}

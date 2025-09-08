@@ -388,13 +388,13 @@ If you want to compare the three calibration approaches with each other, it can 
 
 ```{r Calibration via rr Object, results = "hide", warning=FALSE}
 # Initialize base learner
-learner <- lrn("classif.xgboost", predict_type = "prob")
+learner_xg <- lrn("classif.xgboost", predict_type = "prob")
 
 # Initialize resampling strategy
 rsmp <- rsmp("cv", folds = 5)
 
 # Create rr object
-rr <- resample(task_train, learner, rsmp, store_models = TRUE)
+rr <- resample(task_train, learner_xg, rsmp, store_models = TRUE)
 
 # Initialze the calibrated learners
 learner_calibrated_platt <- as_learner(calibPipeOp("calib.perfold",
@@ -479,3 +479,166 @@ at = auto_tuner(
 
 at$train(task_train)
 ```
+
+# Sample Use Case
+
+Our goal for this exercise sheet is to learn the basics of model calibration for supervised classification with `mlr3calibration`.
+In a calibrated model, the predicted probability for an input feature vector can be interpreted as the true likelihood of the outcome belonging to the positive class, meaning that among all instances assigned a probability of $p$, approximately $p\%$ will belong to the positive class.
+
+## Required Packages
+
+We will use `mlr3` for machine learning, and `mlr3calibration` specifically for calibration:
+
+```{r}
+#library(mlr3calibration)
+library(mlr3verse)
+library(mlr3learners)
+
+set.seed(12345)
+```
+
+## Data: predicting cell segmentation quality
+
+The `modeldata` package contains a data set called `cells`. Initially distributed by [Hill and Haney (2007)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-8-340), they showed how to create models that predict the _quality_ of the image analysis of cells. The outcome has two levels: `"PS"` (for poorly segmented images) or `"WS"` (well-segmented). There are 56 image features that can be used to build a classifier. 
+
+Let's load the data and remove an unwanted column: 
+
+```{r}
+library(modeldata)
+data(cells, package = "modeldata")
+cells$case <- NULL
+```
+
+## Uncalibrated Naive Bayes Learner
+
+We'll show the utility of calibration tools by using a type of model that, in this instance, is likely to produce a poorly calibrated model. The Naive Bayes classifier is a well-established model that assumes that the predictors are statistically _independent_ of one another (to simplify the calculations).  While that is certainly not the case for this data, the model can be effective at discriminating between the classes. Unfortunately, when there are many predictors in the model, it has a tendency to produce class probability distributions that are pathological. The predictions tend to gravitate to values near zero or one, producing distributions that are "U"-shaped ([Kuhn and Johnson, 2013](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C7&q=%22Applied+Predictive+Modeling%22&btnG=)). 
+
+First, we create the task and a train-test-split:
+
+```{r}
+task = as_task_classif(cells, target = "class")
+splits = partition(task)
+cells_train = task$clone()$filter(splits$train)
+cells_test = task$clone()$filter(splits$test)
+```
+
+Now, train the learner: 
+
+```{r}
+learner = lrn("classif.naive_bayes", predict_type = "prob")
+learner$id <- "Uncalibrated Learner"
+learner$train(cells_train)
+```
+
+And have it predict on the unseen test data:
+
+```{r}
+prediction = learner$predict(cells_test)
+```
+
+We will now asses the prediction quality, first measuring meodel performance with ROC AUC and Brier Score.
+
+```{r}
+measures = msrs(c("classif.auc", "classif.bbrier"))
+prediction$score(measures)
+```
+
+Model performance alone does not tell us, if the model is well-calibrated. So let's assess if our model is well-calibrated. Spoiler: it is not. The first clue is the extremely U-shaped distribution of the probability scores:
+
+```{r, message = FALSE}
+hist(prediction$data$prob, breaks = (0:10)/10)
+```
+
+There are almost no cells with moderate probability estimates.
+
+Then, assess if the model is calibrated with `calibrationplot()`. The calibration plot shows the relationship between the predicted probabilities and the true outcomes. The plot is divided into bins, and within each bin, the mean predicted probability and the mean observed outcome are calculated. The calibration plot can be smoothed by setting `smooth = TRUE`.
+
+```{r}
+library(ggplot2)
+calibrationplot(list(learner), cells_test, smooth = TRUE)
+```
+The model is not well-calibrated. For predicted probabilities from 0 to 0.4, it seems to underestimate the true probability, for predicted probabilities higher than 0.4, it tends to overestimate the true probability.
+
+We can also statistically test, if the model is well-calibrated. Possibilities are i.e. Spiegelhalter's Z-test and the HL-test. The p-values of these tests are implemented as calibration measures in `mlr3calibration`. A small p-value indicates poor calibration.
+
+```{r}
+print("Spiegelhalter's Z:")
+prediction$score(spiegelhaltersz$new())
+print("HL-test:")
+prediction$score(hltest$new())
+```
+## Calibration
+
+The good news is that we can do something about this. There are tools to "fix" the probability estimates so that they have better properties, such as falling along the diagonal lines in the diagnostic plots shown above. Different methods improve the predictions in different ways.
+
+`mlr3calibration` implements three calibration strategies:
+
+- Platt-Scaling `platt`: The original model is used to predict on the validation data set, returning predicted probabilities. We already know these probabilities are off, i.e., not well-calibrated. Then, we fit a simple logistic regression model, using the predicted probabilities from the original model as "x/feature" and the true labels as "y/target". In this way, we stack a second model on top of the first one: Original Model -> Probabilities -> Logistic Regression Model -> Calibrated Probabilities.
+
+- Beta-Calibration `beta`: Similar idea to Platt, but instead of a plain logistic regression, we use a more flexible parametric model based on the Beta distribution. The predicted probabilities from the original model are transformed through a function that can represent asymmetric calibration curves (unlike Platt’s symmetric S-shaped curve). This allows better correction when probabilities are skewed. In short: Original Model → Probabilities → Beta Function Transformation → Calibrated Probabilities. The parameter `ab` or `abm` controls if an intercept should be included.
+
+- Isotonic-Calibration `isotonic`: Here we don’t assume a parametric form at all. Instead, we fit a monotonic, piecewise constant function (via isotonic regression) that maps the original probabilities to calibrated ones. This is very flexible — it can fit almost any monotonic calibration curve, but it may overfit on small datasets. So: Original Model → Probabilities → Isotonic Regression (monotone step function) → Calibrated Probabilities.
+
+You can also implement your own Calibrator and add it the the dictionary provided by `mlr3calibration`.
+
+We will try out all calibration strategies for the Naive Bayes learner. To do so, we have to decide for a calibration strategy (when in the CV the calibrator should be trained). As we don't tune our Naive Bayes learner, `tunefirst` is not necessary. We decide to train one calibrator per fold, i.e. `perfold`.
+
+If you want to compare the three calibration approaches with each other, it can be time-consuming to train each calibration approach using cross validation. In these cases, you can train an rr object, store the models and pass it to the PipeOpCalibrationPerFold. This means that the base learner has to be trained once in advance, and only the calibrators have to be trained in the PipeOpCalibrationPerFold using the holdout folds.
+
+```{r Calibration via rr Object, results = "hide", warning=FALSE}
+
+# Initialize base learner
+learner <- lrn("classif.naive_bayes", predict_type = "prob")
+
+# Initialize resampling strategy
+rsmp <- rsmp("cv", folds = 5)
+
+# Create rr object
+rr <- resample(cells_train, learner, rsmp, store_models = TRUE)
+
+# Initialze the calibrated learners
+learner_calibrated_platt <- as_learner(calibPipeOp("calib.perfold",
+                                      rr = rr,
+                                      method = "platt"))
+learner_calibrated_platt$id <- "platt"
+
+learner_calibrated_beta <- as_learner(calibPipeOp("calib.perfold",
+                                      rr = rr,
+                                      method = "beta"))
+learner_calibrated_beta$id <- "beta"
+
+learner_calibrated_isotonic <- as_learner(calibPipeOp("calib.perfold",
+                                      rr = rr,
+                                      method = "isotonic"))
+learner_calibrated_isotonic$id <- "isotonic"
+
+# Train the calibrated learners
+learner_calibrated_platt$train(cells_train)
+learner_calibrated_beta$train(cells_train)
+learner_calibrated_isotonic$train(cells_train)
+```
+Now, we evaluate the calibration:
+
+```{r}
+learner$train(cells_train)
+learner$id <- "uncalibrated"
+calibrationplot(list(learner, learner_calibrated_platt, learner_calibrated_beta, learner_calibrated_isotonic), cells_test, smooth = TRUE)
+```
+We can also compare calibration error:
+
+```{r}
+preds_uncal = learner$predict(cells_test)
+preds_cal_platt = learner_calibrated_platt$predict(cells_test)
+preds_cal_beta = learner_calibrated_beta$predict(cells_test)
+preds_cal_isotonic = learner_calibrated_isotonic$predict(cells_test)
+
+print("uncalibrated")
+preds_uncal$score(ece$new())
+print("platt")
+preds_cal_platt$score(ece$new())
+print("beta")
+preds_cal_beta$score(ece$new())
+print("isotonic")
+preds_cal_isotonic$score(ece$new())
+```
+So we see that isotonic regression calibrates best, i.e. leads to best calibration error.

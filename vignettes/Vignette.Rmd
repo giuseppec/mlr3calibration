@@ -382,6 +382,73 @@ preds_uncal$score(spiegelhaltersz$new())
 preds_cal$score(spiegelhaltersz$new())
 ```
 
+## Own Calibration Measures
+
+It is also possible to implement own calibration measures. For example, we can implement the Maximum Calibration Error (MCE):
+
+Each measure is a R6 class that inherits from `mlr3::MeasureClassif` and implements a `score` function that gives back the measure value for some prediction.
+
+```{r}
+mce = R6::R6Class("mce",
+                  inherit = mlr3::MeasureClassif,
+                  public = list(
+                    #' @description
+                    #' Creates a new `mce` object.
+                    initialize = function() {
+                      super$initialize(
+                        id = "classif.mce",
+                        properties = character(),
+                        predict_type = "prob",
+                        range = c(0, 1),
+                        minimize = TRUE
+                      )
+                    }
+                  ),
+                  private = list(
+                    .score = function(prediction, ...) {
+                      actual = ifelse(prediction$truth == colnames(prediction$prob)[1], 1, 0)
+                      predicted = prediction$prob[, 1]
+                      n_bins = 10
+                      # Create bins
+                      bins <- cut(predicted, breaks = seq(0, 1, length.out = n_bins + 1), include.lowest = TRUE)
+                      
+                      # For each bin: compute accuracy (mean of y_true) and confidence (mean of y_prob)
+                      bin_summary <- aggregate(
+                        data.frame(actual = actual, predicted = predicted), 
+                        by = list(bin = bins), 
+                        FUN = mean
+                      )
+                      
+                      # Calibration error per bin
+                      bin_summary$calib_error <- abs(bin_summary$actual - bin_summary$predicted)
+                      
+                      # Maximum Calibration Error
+                      mce_value <- max(bin_summary$calib_error, na.rm = TRUE)
+                      
+                      return(mce_value)
+                    }
+                  )
+)
+```
+
+The new measure has to be added to the mlr3 measures dictinary to be accessible via key String.
+
+```{r}
+mlr3::mlr_measures$add("classif.mce", mce)
+```
+
+
+Now, let us try out the new measure on the existing calibrated and uncalibrated learner.
+
+```{r}
+preds_uncal = learner_uncal$predict(task_test)
+preds_cal = learner_cal$predict(task_test)
+preds_uncal$score(mce$new())
+preds_cal$score(mce$new())
+```
+
+
+
 # Calibration with resample Object
 
 If you want to compare the three calibration approaches with each other, it can be time-consuming to train each calibration approach using cross validation. In these cases, you can train an rr object, store the models and pass it to the PipeOpCalibrationPerFold. This means that the base learner has to be trained once in advance, and only the calibrators have to be trained in the PipeOpCalibrationPerFold using the holdout folds.

@@ -709,3 +709,37 @@ print("isotonic")
 preds_cal_isotonic$score(ece$new())
 ```
 So we see that isotonic regression calibrates best, i.e. leads to best calibration error.
+
+# Further Research
+
+- Confidence intervals for metrics
+- Subgroup Analysis for metrics
+- Prevalence Adjustments
+- Multiclass Calibration
+
+## Multiclass Calibration
+
+### Option 1: One-vs.-Rest
+
+see Calzone [Kwok Lung Fan, Qian Cao, 2002] (http://jmlr.org/papers/v23/22-0658.html),
+Sklearn 
+
+### Option 2: Explicit Multiclass Calibration
+
+Smooth Calibration [Parikshit Gopalan PARIK, Lunjia Hu LUNJIA, Guy N. Rothblum ROTHBLUM] ( https://proceedings.mlr.press/v247/gopalan24a/gopalan24a.pdf)
+- Polynomial Complexity
+- Probabilities “close” to binary calibrated probabilities
+Projected Smooth Calibration: psCE: supremum (over all weights) of expected weighted distance between true outcome and prediction
+Use Kernel Algorithm for Auditing
+
+Decision Calibration [Shengjia Zhao, Michael P. Kim, Roshni Sahoo](https://proceedings.neurips.cc/paper_files/paper/2021/file/bbc92a647199b832ec90d7cf57074e9e-Paper.pdf)
+- Polynomial complexity
+- Predicted and true distribution indistinguishable to a set of downstream decision makers
+Decision: 
+- Decison maker has loss l and decision rule \delta. L should be computable as a function of the predicted probabilities
+Algorithm: see pseudocode in paper
+
+Other Notions of Calibration (from [Shengjia Zhao, Michael P. Kim, Roshni Sahoo](https://proceedings.neurips.cc/paper_files/paper/2021/file/bbc92a647199b832ec90d7cf57074e9e-Paper.pdf))
+- Confidence: highest frequency should lead to highest probability ??
+- Classwise (for all classes)
+- Distribution (for all possible subsets)

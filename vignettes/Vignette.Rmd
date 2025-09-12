@@ -45,7 +45,7 @@ library(mlr3verse)
 # Calibration
 
 To use the `mlr3calibration` package, we first need a binary
-classification task. Multiclass calibration is not suported yet.
+classification task. Multiclass calibration is not supported yet.
 
 ```{r task}
 # Load a binary classification task
@@ -895,3 +895,142 @@ complexity:
     -   Classwise (for all classes)
 
     -   Distribution (for all possible subsets)
+    
+    
+    
+# Extended Sample Use Case: Benchmark of Calibration Methods and Resampling Strategies
+
+## Benchmark Data Sets
+
+```{r}
+library(mlr3)
+library(mlr3oml)
+
+# oml benchmark suite, filter 10 benchmark data sets
+otask_collection = ocl(id = 99)
+
+binary_cc18 = list_oml_tasks(
+  limit = 10,
+  task_id = otask_collection$task_ids,
+  number_classes = 2,
+  number_features = c(1, 50),
+  number_instances = c(1000, 10000),
+  number_missing_values = 0
+)
+```
+
+
+```{r}
+# load tasks as a list
+otasks = lapply(binary_cc18$task_id, otsk)
+
+# convert to mlr3 tasks and resamplings
+tasks = as_tasks(otasks)
+resamplings = as_resamplings(otasks)
+```
+## Learners
+
+we need: Naive Bayes, Random Forest, Decision Tree
+
+each with: OOF, perFold
+
+each for: uncalibrated, isotonic, beta, platt
+
+```{r}
+# ---- Base learners ----
+learners = list(
+  lrn("classif.naive_bayes", predict_type = "prob"),
+  lrn("classif.ranger", predict_type = "prob"),  # random forest
+  lrn("classif.rpart", predict_type = "prob")    # decision tree
+)
+
+# ---- Calibration methods ----
+calib_methods = c("platt", "beta", "isotonic")
+
+# ---- Calibration strategies ----
+calib_strategies = c("calib.oof", "calib.perfold")
+
+# ---- Wrap learners with calibration ----
+make_calibrated_learners = function(learner) {
+  out = list()
+  
+  # uncalibrated version
+  out[[learner$id]] = learner$clone()
+  
+  # calibrated versions
+  for (strategy in calib_strategies) {
+    for (method in calib_methods) {
+      po = as_learner(calibPipeOp(strategy, learner = learner$clone(), method = method, resampling = rsmp("cv", folds = 5)))
+      id = paste(learner$id, strategy, method, sep = "_")
+      po$id = id
+      out[[id]] = po
+    }
+  }
+  out
+}
+
+all_learners = unlist(lapply(learners, make_calibrated_learners), recursive = FALSE)
+```
+
+
+## Benchmark Grid
+
+```{r}
+large_design = benchmark_grid(tasks, all_learners, resamplings,
+  paired = TRUE)
+large_design[1:6] # first 6 rows
+```
+
+## Run the experiment
+
+```{r}
+bmr = benchmark(large_design)
+bmr
+```
+
+```{r}
+library(mlr3)
+library(mlr3verse)
+library(data.table)
+
+# Assume you already have:
+# - `large_design` (BenchmarkDesign)
+# - learners and tasks defined
+
+# 1. Extract the underlying design table
+design_dt = large_design$data  # a data.table
+
+# 2. Split by learner_id
+learner_chunks = data.table::split(design_dt, design_dt$learner_id) #, by = "learner_id"
+
+# 3. Run benchmark per learner and save partial results
+for (learner_id in names(learner_chunks)) {
+  
+  message("Running benchmark for learner: ", learner_id)
+  
+  # Extract chunk
+  chunk_dt = learner_chunks[[learner_id]]
+  
+  # Reconstruct BenchmarkDesign for this chunk
+  chunk_design = benchmark_grid(
+    tasks = chunk_dt$task[[1]],      # tasks column is a list of TaskClassif
+    learners = chunk_dt$learner[[1]],# learners column is a list of Learners
+    resamplings = chunk_dt$resampling[[1]], # resampling objects
+    paired = TRUE
+  )
+  
+  # Run benchmark
+  bmr_part = benchmark(chunk_design)
+  
+  # Save partial result to disk
+  saveRDS(bmr_part, file = paste0("bmr_part_", learner_id, ".rds"))
+  
+  print("----------------------------------------------------")
+  print(learner_id)
+  print("done")
+  print("----------------------------------------------------")
+}
+
+```
+
+

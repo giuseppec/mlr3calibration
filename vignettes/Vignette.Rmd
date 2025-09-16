@@ -1058,57 +1058,170 @@ bmr = reduceResultsBatchmark(ids, reg = reg)
 bmr$aggregate(ece$new())[1:5]
 ```
 
-
-
-
-
-
+Visualize Results
 
 ```{r}
-library(mlr3)
-library(mlr3verse)
-library(data.table)
+bmrdt = as.data.table(bmr)
+bmrdt[1:2, .(task, learner, resampling, iteration)]
+```
+```{r}
+# Example: add classification error and accuracy
+bmrdt_measured = as.data.table(bmr$score(measures = list(ece$new())))
 
-# Assume you already have:
-# - `large_design` (BenchmarkDesign)
-# - learners and tasks defined
-
-# 1. Extract the underlying design table
-design_dt = large_design$data  # a data.table
-print(class(design_dt))
-design_dt[, learner_id := sapply(learner, function(l) l$id)]
-
-# 2. Split by learner_id
-learner_chunks = data.table::split(design_dt, design_dt$learner_id) #, by = "learner_id"
-
-# 3. Run benchmark per learner and save partial results
-for (learner_id in names(learner_chunks)) {
-  
-  message("Running benchmark for learner: ", learner_id)
-  
-  # Extract chunk
-  chunk_dt = learner_chunks[[learner_id]]
-  
-  # Reconstruct BenchmarkDesign for this chunk
-  chunk_design = benchmark_grid(
-    tasks = chunk_dt$task[[1]],      # tasks column is a list of TaskClassif
-    learners = chunk_dt$learner[[1]],# learners column is a list of Learners
-    resamplings = chunk_dt$resampling[[1]], # resampling objects
-    paired = TRUE
-  )
-  
-  # Run benchmark
-  bmr_part = benchmark(chunk_design)
-  
-  # Save partial result to disk
-  saveRDS(bmr_part, file = paste0("bmr_part_", learner_id, ".rds"))
-  
-  print("----------------------------------------------------")
-  print(learner_id)
-  print("done")
-  print("----------------------------------------------------")
-}
+head(bmrdt_measured)
 
 ```
+```{r}
+library(data.table)
+
+bmrdt_measured[, calibration_strategy := fcase(
+  grepl("oof", learner_id), "oof",
+  grepl("perfold", learner_id), "perfold",
+  default = "none"
+)]
+
+bmrdt_measured[, calibration_method := fcase(
+  grepl("platt", learner_id), "platt",
+  grepl("beta", learner_id), "beta",
+  grepl("isotonic", learner_id), "isotonic",
+  default = "none"
+)]
+
+bmrdt_measured[, base_learner := fcase(
+  grepl("naive_bayes", learner_id), "naive_bayes",
+  grepl("ranger", learner_id), "ranger",
+  grepl("rpart", learner_id), "rpart",
+  default = "NO"
+)]
+```
+
+```{r}
+write.csv(
+  bmrdt_measured[, .(task_id, learner_id, classif.ece, calibration_strategy, calibration_method, base_learner)],
+  "bmrdt_measured.csv",
+  row.names = FALSE
+)
+```
+
+
+Which plots do I need?
+
+- comparing calibration strategies: no calibration vs. oof vs. inFold (each learner, avg over all tasks, avg over all methods)
+
+- comparing methods: platt vs. beta vs. isotonic vs. no calibration (each learner, avg over all tasks, avg over all strategies)
+
+```{r}
+library(data.table)
+library(ggplot2)
+
+ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration_method)) +
+  geom_boxplot() +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Classification ECE",
+    fill = "Calibration Method",
+    title = "ECE per Base Learner and Calibration Method"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+```{r}
+ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration_strategy)) +
+  geom_boxplot() +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Classification ECE",
+    fill = "Calibration Strategy",
+    title = "ECE per Base Learner and Calibration Strategy"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r}
+ggplot(
+  bmrdt_measured[calibration_strategy == "none"],
+  aes(x = task_id, y = classif.ece, color = base_learner)
+) +
+  geom_point(position = position_jitter(width = 0.2, height = 0)) +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Classification ECE",
+    color = "Base Learner",
+    title = "ECE per Task (No Calibration Strategy)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r}
+# Aggregate ECE per task_id and base_learner where calibration_strategy is none
+plotdt = bmrdt_measured[calibration_strategy == "none",
+                        .(mean_ece = mean(classif.ece, na.rm = TRUE)),
+                        by = .(task_id, base_learner)]
+
+# Scatter plot of averaged ECE
+ggplot(plotdt, aes(x = task_id, y = mean_ece, color = base_learner, group = base_learner)) +
+  geom_point(size = 3) +
+  geom_line() +  # optional: connect points per base_learner
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Mean Classification ECE",
+    color = "Base Learner",
+    title = "Average ECE per Task and Base Learner (No Calibration Strategy)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r}
+# Aggregate mean ECE per task_id, base_learner, and calibration_strategy
+plotdt = bmrdt_measured[, .(
+  mean_ece = mean(classif.ece, na.rm = TRUE)
+), by = .(task_id, base_learner, calibration_strategy)]
+
+# Scatter plot with facets for each base learner
+ggplot(plotdt, aes(x = task_id, y = mean_ece, color = calibration_strategy, group = calibration_strategy)) +
+  geom_point(size = 3) +
+  geom_line() +
+  facet_wrap(~ base_learner, scales = "free_x") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Mean Classification ECE",
+    color = "Calibration Strategy",
+    title = "Average ECE per Task, by Calibration Strategy, per Base Learner"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r}
+# Aggregate mean ECE per task_id, base_learner, calibration_strategy, and calibration_method
+plotdt = bmrdt_measured[, .(
+  mean_ece = mean(classif.ece, na.rm = TRUE)
+), by = .(task_id, base_learner, calibration_strategy, calibration_method)]
+
+# Create a combined factor for coloring
+plotdt[, strategy_method := paste(calibration_strategy, calibration_method, sep = "_")]
+
+# Scatter plot with facets per base learner
+ggplot(plotdt, aes(x = task_id, y = mean_ece, color = strategy_method, group = strategy_method)) +
+  geom_point(size = 3) +
+  geom_line() +
+  facet_wrap(~ base_learner, scales = "free_x") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Mean Classification ECE",
+    color = "Strategy_Method",
+    title = "Average ECE per Task by Calibration Strategy + Method per Base Learner"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+
+
 
 

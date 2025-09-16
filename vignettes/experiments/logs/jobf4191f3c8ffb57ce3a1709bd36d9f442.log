@@ -1,0 +1,97 @@
+### [bt]: This is batchtools v0.9.17
+### [bt]: Starting calculation of 5 jobs
+### [bt]: Setting working directory to '/Users/User/Documents/Studium/Semester8/Hiwi/mlr3calibration/vignettes'
+### [bt]: Memory measurement disabled
+### [bt]: Starting job [batchtools job.id=1036]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1036 (seed = 1037) ...
+INFO  [17:26:35.570] [mlr3] Applying learner 'classif.rpart_calib.perfold_beta' on task 'kc1' (iter 6/10)
+[1] -1.736465
+[1] 46.53047
+[1] -0.3859807
+[1] 32.42207
+[1] -1.833585
+[1] 26.67963
+[1] -2.6271
+[1] 43.49073
+[1] 0.06102281
+[1] 36.90092
+
+### [bt]: Job terminated successfully [batchtools job.id=1036]
+### [bt]: Starting job [batchtools job.id=1037]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1037 (seed = 1038) ...
+INFO  [17:26:35.828] [mlr3] Applying learner 'classif.rpart_calib.perfold_beta' on task 'kc1' (iter 7/10)
+[1] 0.3100988
+[1] 40.9094
+[1] -61.99024
+[1] -2.136236
+[1] -41.34402
+[1] 19.60393
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.rpart's $train()
+[1] 0.14478
+[1] 33.71018
+[1] -1.719468
+[1] 43.14739
+
+### [bt]: Job terminated successfully [batchtools job.id=1037]
+### [bt]: Starting job [batchtools job.id=1038]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1038 (seed = 1039) ...
+INFO  [17:26:36.165] [mlr3] Applying learner 'classif.rpart_calib.perfold_beta' on task 'kc1' (iter 8/10)
+[1] 0.06579896
+[1] 32.94348
+[1] 0.2244632
+[1] 33.68912
+[1] 0.3972985
+[1] 40.83096
+[1] 0.2220441
+[1] 34.53532
+[1] 0.3850973
+[1] 37.03034
+
+### [bt]: Job terminated successfully [batchtools job.id=1038]
+### [bt]: Starting job [batchtools job.id=1039]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1039 (seed = 1040) ...
+INFO  [17:26:36.810] [mlr3] Applying learner 'classif.rpart_calib.perfold_beta' on task 'kc1' (iter 9/10)
+[1] 0.6807995
+[1] 43.44243
+[1] -90.4932
+[1] -2.529286
+[1] 0.5209406
+[1] 39.48339
+[1] 0.9007972
+[1] 45.87475
+[1] -0.413043
+[1] 24.73634
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.rpart's $train()
+
+### [bt]: Job terminated successfully [batchtools job.id=1039]
+### [bt]: Starting job [batchtools job.id=1040]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1040 (seed = 1041) ...
+INFO  [17:26:37.049] [mlr3] Applying learner 'classif.rpart_calib.perfold_beta' on task 'kc1' (iter 10/10)
+[1] 0.7791947
+[1] 46.22179
+[1] 0.3998783
+[1] 42.23848
+[1] 0.8482602
+[1] 52.40599
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.rpart's $train()
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.rpart's $train()
+[1] 0.8434716
+[1] 42.18091
+[1] -0.2567217
+[1] 27.87206
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.rpart's $train()
+
+### [bt]: Job terminated successfully [batchtools job.id=1040]
+### [bt]: Calculation finished!

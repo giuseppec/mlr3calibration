@@ -987,6 +987,82 @@ large_design[1:6] # first 6 rows
 bmr = benchmark(large_design)
 bmr
 ```
+```{r}
+library(batchtools)
+
+# create registry
+reg = makeExperimentRegistry(
+  file.dir = "./experiments",
+  seed = 1,
+  packages = "mlr3verse"
+)
+```
+```{r}
+library(mlr3batchmark)
+batchmark(large_design, reg = reg)
+```
+```{r}
+job_table = getJobTable(reg = reg)
+job_table = unwrap(job_table)
+job_table = job_table[,
+  .(job.id, learner_id, task_id, resampling_id, repl)
+]
+
+job_table
+```
+```{r}
+result = testJob(1, external = TRUE, reg = reg)
+```
+```{r}
+library(snow)
+cf = makeClusterFunctionsSocket()
+```
+
+```{r}
+reg$cluster.functions = cf
+saveRegistry(reg = reg)
+```
+
+```{r}
+ids = job_table$job.id
+chunks = data.table(
+  job.id = ids, chunk = chunk(ids, chunk.size = 5, shuffle = FALSE)
+)
+chunks[1:6] # first 6 jobs
+```
+```{r}
+resources = list(ncpus = 1, walltime = 1800, memory = 8000)
+```
+
+```{r}
+submitJobs(ids = chunks, resources = resources, reg = reg)
+
+# wait for all jobs to terminate
+waitForJobs(reg = reg)
+```
+
+```{r}
+getStatus(reg = reg)
+```
+Error handling
+
+```{r}
+error_ids = findErrors(reg = reg)
+summarizeExperiments(error_ids, by = c("task_id", "learner_id"),
+  reg = reg)
+```
+```{r}
+ids = findExperiments(algo.pars = learner_id != "classif.rpart_calib.perfold_beta",
+  reg = reg)
+bmr = reduceResultsBatchmark(ids, reg = reg)
+bmr$aggregate(ece$new())[1:5]
+```
+
+
+
+
+
+
 
 ```{r}
 library(mlr3)
@@ -999,6 +1075,8 @@ library(data.table)
 
 # 1. Extract the underlying design table
 design_dt = large_design$data  # a data.table
+print(class(design_dt))
+design_dt[, learner_id := sapply(learner, function(l) l$id)]
 
 # 2. Split by learner_id
 learner_chunks = data.table::split(design_dt, design_dt$learner_id) #, by = "learner_id"

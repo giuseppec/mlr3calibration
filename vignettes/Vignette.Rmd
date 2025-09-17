@@ -895,12 +895,26 @@ complexity:
     -   Classwise (for all classes)
 
     -   Distribution (for all possible subsets)
-    
-    
-    
+
 # Extended Sample Use Case: Benchmark of Calibration Methods and Resampling Strategies
 
+Having implemented several calibration methods and strategies, we now
+want to benchmark them. We are interested in these questions:
+
+1)  Which calibration method works best? (platt, beta, isotonic)?
+
+2)  Which calibration strategy works best? (oof, perfold)?
+
+To measure calibration quality, we will use the expected calibration
+error `ece`.
+
 ## Benchmark Data Sets
+
+For our benchmark, we select 10 tasks from the openml benchmark suite
+[Bischl, Bernd et al., OpenML Benchmarking Suites
+<https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/file/c7e1249ffc03eb9ded908c23bd1996d-Paper-round2.pdf>,
+2021]. We only choose binary tasks with 1000 to 10000 samples and 1 to
+50 features to keep things simple.
 
 ```{r}
 library(mlr3)
@@ -919,7 +933,6 @@ binary_cc18 = list_oml_tasks(
 )
 ```
 
-
 ```{r}
 # load tasks as a list
 otasks = lapply(binary_cc18$task_id, otsk)
@@ -928,13 +941,14 @@ otasks = lapply(binary_cc18$task_id, otsk)
 tasks = as_tasks(otasks)
 resamplings = as_resamplings(otasks)
 ```
+
 ## Learners
 
-we need: Naive Bayes, Random Forest, Decision Tree
-
-each with: OOF, perFold
-
-each for: uncalibrated, isotonic, beta, platt
+We decide to calibrate on Naive Bayes, which is known to be rather
+poorly calibrated, Random Forest and Decision Tree base learners. We
+only choose learners that do not require much tuning, so that we can
+compare the two calibration strategies `oof` and `perfold` that are both
+without tuning in a meaningful manner.
 
 ```{r}
 # ---- Base learners ----
@@ -972,7 +986,6 @@ make_calibrated_learners = function(learner) {
 all_learners = unlist(lapply(learners, make_calibrated_learners), recursive = FALSE)
 ```
 
-
 ## Benchmark Grid
 
 ```{r}
@@ -987,6 +1000,7 @@ large_design[1:6] # first 6 rows
 bmr = benchmark(large_design)
 bmr
 ```
+
 ```{r}
 library(batchtools)
 
@@ -997,10 +1011,12 @@ reg = makeExperimentRegistry(
   packages = "mlr3verse"
 )
 ```
+
 ```{r}
 library(mlr3batchmark)
 batchmark(large_design, reg = reg)
 ```
+
 ```{r}
 job_table = getJobTable(reg = reg)
 job_table = unwrap(job_table)
@@ -1010,9 +1026,11 @@ job_table = job_table[,
 
 job_table
 ```
+
 ```{r}
 result = testJob(1, external = TRUE, reg = reg)
 ```
+
 ```{r}
 library(snow)
 cf = makeClusterFunctionsSocket()
@@ -1030,6 +1048,7 @@ chunks = data.table(
 )
 chunks[1:6] # first 6 jobs
 ```
+
 ```{r}
 resources = list(ncpus = 1, walltime = 1800, memory = 8000)
 ```
@@ -1044,6 +1063,7 @@ waitForJobs(reg = reg)
 ```{r}
 getStatus(reg = reg)
 ```
+
 Error handling
 
 ```{r}
@@ -1051,6 +1071,10 @@ error_ids = findErrors(reg = reg)
 summarizeExperiments(error_ids, by = c("task_id", "learner_id"),
   reg = reg)
 ```
+
+For `pc1` task, `perfold` `beta` calibration on the Decision Tree does
+not numerically converge.
+
 ```{r}
 ids = findExperiments(algo.pars = learner_id != "classif.rpart_calib.perfold_beta",
   reg = reg)
@@ -1058,12 +1082,13 @@ bmr = reduceResultsBatchmark(ids, reg = reg)
 bmr$aggregate(ece$new())[1:5]
 ```
 
-Visualize Results
+## Collect Benchmark Results
 
 ```{r}
 bmrdt = as.data.table(bmr)
 bmrdt[1:2, .(task, learner, resampling, iteration)]
 ```
+
 ```{r}
 # Example: add classification error and accuracy
 bmrdt_measured = as.data.table(bmr$score(measures = list(ece$new())))
@@ -1071,6 +1096,7 @@ bmrdt_measured = as.data.table(bmr$score(measures = list(ece$new())))
 head(bmrdt_measured)
 
 ```
+
 ```{r}
 library(data.table)
 
@@ -1103,12 +1129,17 @@ write.csv(
 )
 ```
 
+## Visualize Benchmark Results
 
-Which plots do I need?
+```{r}
+bmrdt_measured <- read.csv("bmrdt_measured.csv")
+```
 
-- comparing calibration strategies: no calibration vs. oof vs. inFold (each learner, avg over all tasks, avg over all methods)
+### Main results
 
-- comparing methods: platt vs. beta vs. isotonic vs. no calibration (each learner, avg over all tasks, avg over all strategies)
+We are interested in how well all calibration methods and strategies
+improved the calibration of the base learners compared to the
+uncalibrated base learner:
 
 ```{r}
 library(data.table)
@@ -1125,6 +1156,37 @@ ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+```{r}
+ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration_method)) +
+  geom_boxplot() +
+  facet_wrap(~ calibration_strategy, scales = "fixed") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Classification ECE",
+    fill = "Calibration Method",
+    title = "ECE per Base Learner and Calibration Method (by Calibration Strategy)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Naive Bayes is per se poorly calibrated, whereas Random Forest is
+already well calibrated before applying any of the calibration methods
+and strategies.
+
+There is no real difference visible between `oof` and `perfold`
+calibration: Both improve Naive Bayes Calibration in a similar manner,
+both do not quite reduce the variance of `ece` compared the uncalibrated
+base learner.
+
+When only looking at the calibration method (first plot) all methods
+seem to work equally well for Naive Bayes and Random Forest. For
+Decision Tree, `platt` slightly outperforms the other methods.
+
+### Deep Dive Calibration Strategy
+
 ```{r}
 ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration_strategy)) +
   geom_boxplot() +
@@ -1138,27 +1200,39 @@ ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
+
+Calibration only really helps for Naive Bayes. There is no difference
+visible between the strategies.
+
+### Deep Dive Differences between Benchmark Tasks
+
 ```{r}
+library(data.table)
 ggplot(
-  bmrdt_measured[calibration_strategy == "none"],
+  subset(bmrdt_measured, calibration_strategy == "none"),
   aes(x = task_id, y = classif.ece, color = base_learner)
 ) +
-  geom_point(position = position_jitter(width = 0.2, height = 0)) +
+  geom_boxplot() +
   theme_minimal(base_size = 14) +
   labs(
     x = "Task ID",
     y = "Classification ECE",
-    color = "Base Learner",
+    fill = "Base Learner",
     title = "ECE per Task (No Calibration Strategy)"
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
+
 ```{r}
 # Aggregate ECE per task_id and base_learner where calibration_strategy is none
-plotdt = bmrdt_measured[calibration_strategy == "none",
-                        .(mean_ece = mean(classif.ece, na.rm = TRUE)),
-                        by = .(task_id, base_learner)]
+library(dplyr)
+
+plotdt <- bmrdt_measured %>%
+  filter(calibration_strategy == "none") %>%
+  group_by(task_id, base_learner) %>%
+  summarise(mean_ece = mean(classif.ece, na.rm = TRUE), .groups = "drop")
+
 
 # Scatter plot of averaged ECE
 ggplot(plotdt, aes(x = task_id, y = mean_ece, color = base_learner, group = base_learner)) +
@@ -1174,11 +1248,16 @@ ggplot(plotdt, aes(x = task_id, y = mean_ece, color = base_learner, group = base
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
+
+Naive Bayes is really calibrated worst for most, but also Decision Tree
+seems similar except for `pc3`
+
 ```{r}
 # Aggregate mean ECE per task_id, base_learner, and calibration_strategy
-plotdt = bmrdt_measured[, .(
-  mean_ece = mean(classif.ece, na.rm = TRUE)
-), by = .(task_id, base_learner, calibration_strategy)]
+plotdt <- bmrdt_measured %>%
+  group_by(task_id, base_learner, calibration_strategy) %>%
+  summarise(mean_ece = mean(classif.ece, na.rm = TRUE), .groups = "drop")
+
 
 # Scatter plot with facets for each base learner
 ggplot(plotdt, aes(x = task_id, y = mean_ece, color = calibration_strategy, group = calibration_strategy)) +
@@ -1195,14 +1274,20 @@ ggplot(plotdt, aes(x = task_id, y = mean_ece, color = calibration_strategy, grou
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
+
+similarity over strategies
+
 ```{r}
 # Aggregate mean ECE per task_id, base_learner, calibration_strategy, and calibration_method
-plotdt = bmrdt_measured[, .(
-  mean_ece = mean(classif.ece, na.rm = TRUE)
-), by = .(task_id, base_learner, calibration_strategy, calibration_method)]
+plotdt <- bmrdt_measured %>%
+  group_by(task_id, base_learner, calibration_strategy, calibration_method) %>%
+  summarise(mean_ece = mean(classif.ece, na.rm = TRUE), .groups = "drop")
+
 
 # Create a combined factor for coloring
-plotdt[, strategy_method := paste(calibration_strategy, calibration_method, sep = "_")]
+plotdt <- plotdt %>%
+  mutate(strategy_method = paste(calibration_strategy, calibration_method, sep = "_"))
+
 
 # Scatter plot with facets per base learner
 ggplot(plotdt, aes(x = task_id, y = mean_ece, color = strategy_method, group = strategy_method)) +
@@ -1219,9 +1304,3 @@ ggplot(plotdt, aes(x = task_id, y = mean_ece, color = strategy_method, group = s
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
-
-
-
-
-
-

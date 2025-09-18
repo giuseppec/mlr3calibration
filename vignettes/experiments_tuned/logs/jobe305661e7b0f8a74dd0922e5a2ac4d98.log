@@ -1,0 +1,375 @@
+### [bt]: This is batchtools v0.9.17
+### [bt]: Starting calculation of 5 jobs
+### [bt]: Setting working directory to '/Users/User/Documents/Studium/Semester8/Hiwi/mlr3calibration/vignettes'
+### [bt]: Memory measurement disabled
+### [bt]: Starting job [batchtools job.id=1901]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1901 (seed = 1902) ...
+INFO  [17:04:59.428] [mlr3] Applying learner 'classif.xgboost.tuned_calib.tunefirst.oof_beta' on task 'kc1' (iter 1/10)
+INFO  [17:04:59.473] [bbotk] Starting to optimize 3 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=10, k=0]'
+INFO  [17:04:59.486] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:00.657] [bbotk] Result of batch 1:
+INFO  [17:05:00.659] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:00.659] [bbotk]      178 0.2973979         8  0.1459454        0      0            1.132
+INFO  [17:05:00.659] [bbotk]                                 uhash
+INFO  [17:05:00.659] [bbotk]  cd07bc8d-7f03-4ced-a2c9-540884102cc3
+INFO  [17:05:00.665] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:01.328] [bbotk] Result of batch 2:
+INFO  [17:05:01.329] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:01.329] [bbotk]      176 0.2362083         4  0.1464753        0      0             0.62
+INFO  [17:05:01.329] [bbotk]                                 uhash
+INFO  [17:05:01.329] [bbotk]  ef936a47-d2c3-423f-a41d-e2d861885403
+INFO  [17:05:01.333] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:03.346] [bbotk] Result of batch 3:
+INFO  [17:05:03.347] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:03.347] [bbotk]      246 0.0820047        10  0.1427875        0      0            1.976
+INFO  [17:05:03.347] [bbotk]                                 uhash
+INFO  [17:05:03.347] [bbotk]  455028cc-3664-43e3-916e-81251ccc6286
+INFO  [17:05:03.351] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:03.913] [bbotk] Result of batch 4:
+INFO  [17:05:03.914] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:03.914] [bbotk]       62 0.1115894        10  0.1438374        0      0            0.508
+INFO  [17:05:03.914] [bbotk]                                 uhash
+INFO  [17:05:03.914] [bbotk]  67ed4ab2-66d5-4ff7-8101-832e1e8e32c1
+INFO  [17:05:03.918] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:04.246] [bbotk] Result of batch 5:
+INFO  [17:05:04.247] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:04.247] [bbotk]      130 0.2162921         2   0.141736        0      0            0.254
+INFO  [17:05:04.247] [bbotk]                                 uhash
+INFO  [17:05:04.247] [bbotk]  47b45046-092d-44cd-b72b-4e95a6289d49
+INFO  [17:05:04.259] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:05.028] [bbotk] Result of batch 6:
+INFO  [17:05:05.029] [bbotk]  nrounds      eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:05.029] [bbotk]      273 0.280451         3    0.14911        0      0            0.721
+INFO  [17:05:05.029] [bbotk]                                 uhash
+INFO  [17:05:05.029] [bbotk]  9d10be76-3780-4dd5-8171-89a52f7b0ae9
+INFO  [17:05:05.033] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:06.228] [bbotk] Result of batch 7:
+INFO  [17:05:06.230] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:06.230] [bbotk]      212 0.03047321         6  0.1412111        0      0            1.144
+INFO  [17:05:06.230] [bbotk]                                 uhash
+INFO  [17:05:06.230] [bbotk]  7d2626ff-54ef-4d7b-8355-93511c9d526e
+INFO  [17:05:06.237] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:06.822] [bbotk] Result of batch 8:
+INFO  [17:05:06.823] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:06.823] [bbotk]      180 0.1761778         4  0.1417327        0      0            0.544
+INFO  [17:05:06.823] [bbotk]                                 uhash
+INFO  [17:05:06.823] [bbotk]  4fa5114d-5e76-4b05-b46b-495ec9f3af48
+INFO  [17:05:06.827] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:07.829] [bbotk] Result of batch 9:
+INFO  [17:05:07.831] [bbotk]  nrounds      eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:07.831] [bbotk]      286 0.168845         4  0.1448914        0      0            0.963
+INFO  [17:05:07.831] [bbotk]                                 uhash
+INFO  [17:05:07.831] [bbotk]  62f47a22-2c28-46a0-be98-9a5705d7351b
+INFO  [17:05:07.835] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:08.677] [bbotk] Result of batch 10:
+INFO  [17:05:08.678] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:08.678] [bbotk]      185 0.06964738         4  0.1422684        0      0            0.756
+INFO  [17:05:08.678] [bbotk]                                 uhash
+INFO  [17:05:08.678] [bbotk]  8f207017-f014-4a6a-9c7f-9db14c625a14
+INFO  [17:05:08.693] [bbotk] Finished optimizing after 10 evaluation(s)
+INFO  [17:05:08.694] [bbotk] Result:
+INFO  [17:05:08.696] [bbotk]  nrounds        eta max_depth learner_param_vals  x_domain classif.ce
+INFO  [17:05:08.696] [bbotk]    <int>      <num>     <int>             <list>    <list>      <num>
+INFO  [17:05:08.696] [bbotk]      212 0.03047321         6          <list[5]> <list[3]>  0.1412111
+[1] -17.38466
+[1] 32.16756
+
+### [bt]: Job terminated successfully [batchtools job.id=1901]
+### [bt]: Starting job [batchtools job.id=1902]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1902 (seed = 1903) ...
+INFO  [17:05:11.321] [mlr3] Applying learner 'classif.xgboost.tuned_calib.tunefirst.oof_beta' on task 'kc1' (iter 2/10)
+INFO  [17:05:11.382] [bbotk] Starting to optimize 3 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=10, k=0]'
+INFO  [17:05:11.400] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:12.803] [bbotk] Result of batch 1:
+INFO  [17:05:12.804] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:12.804] [bbotk]      271 0.1218563         6  0.1412069        0      0            1.365
+INFO  [17:05:12.804] [bbotk]                                 uhash
+INFO  [17:05:12.804] [bbotk]  2ac68f7f-5778-4317-a03c-b258122a9235
+INFO  [17:05:12.811] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:13.461] [bbotk] Result of batch 2:
+INFO  [17:05:13.462] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:13.462] [bbotk]      232 0.2767629         3   0.145423        0      0            0.599
+INFO  [17:05:13.462] [bbotk]                                 uhash
+INFO  [17:05:13.462] [bbotk]  e863adfa-15fd-4e2f-91f3-bef7485f3267
+INFO  [17:05:13.466] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:15.128] [bbotk] Result of batch 3:
+INFO  [17:05:15.130] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:15.130] [bbotk]      241 0.2806537        10   0.142785        0      0            1.604
+INFO  [17:05:15.130] [bbotk]                                 uhash
+INFO  [17:05:15.130] [bbotk]  40bed659-eaa7-4c29-be80-90a17cfad0b4
+INFO  [17:05:15.135] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:15.507] [bbotk] Result of batch 4:
+INFO  [17:05:15.509] [bbotk]  nrounds      eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:15.509] [bbotk]      198 0.210053         2  0.1438382        0      0            0.335
+INFO  [17:05:15.509] [bbotk]                                 uhash
+INFO  [17:05:15.509] [bbotk]  5e422eb4-922e-408d-b4bb-b87c684ef49a
+INFO  [17:05:15.516] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:15.755] [bbotk] Result of batch 5:
+INFO  [17:05:15.756] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:15.756] [bbotk]       92 0.1813689         3  0.1343554        0      0            0.199
+INFO  [17:05:15.756] [bbotk]                                 uhash
+INFO  [17:05:15.756] [bbotk]  9d6985f4-2daa-4d4b-9a8b-9995ae576574
+INFO  [17:05:15.763] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:16.064] [bbotk] Result of batch 6:
+INFO  [17:05:16.065] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:16.065] [bbotk]      149 0.2246918         2   0.144369        0      0            0.256
+INFO  [17:05:16.065] [bbotk]                                 uhash
+INFO  [17:05:16.065] [bbotk]  ab299da0-e7bf-416c-a018-1020ed958456
+INFO  [17:05:16.071] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:16.557] [bbotk] Result of batch 7:
+INFO  [17:05:16.558] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:16.558] [bbotk]      176 0.2748238         3  0.1417352        0      0            0.444
+INFO  [17:05:16.558] [bbotk]                                 uhash
+INFO  [17:05:16.558] [bbotk]  1d446e4a-52e4-4466-92ff-cecfda84063c
+INFO  [17:05:16.567] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:16.779] [bbotk] Result of batch 8:
+INFO  [17:05:16.780] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:16.780] [bbotk]       50 0.1266512         4  0.1369875        0      0            0.168
+INFO  [17:05:16.780] [bbotk]                                 uhash
+INFO  [17:05:16.780] [bbotk]  d4f89c19-41b9-48b3-8b2c-8a39eb2881f6
+INFO  [17:05:16.784] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:17.143] [bbotk] Result of batch 9:
+INFO  [17:05:17.144] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:17.144] [bbotk]      158 0.1972703         2  0.1433124        0      0            0.325
+INFO  [17:05:17.144] [bbotk]                                 uhash
+INFO  [17:05:17.144] [bbotk]  8a613518-7376-4000-bc3c-fdb35002a604
+INFO  [17:05:17.152] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:17.858] [bbotk] Result of batch 10:
+INFO  [17:05:17.859] [bbotk]  nrounds      eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:17.859] [bbotk]       83 0.158907        10  0.1417343        0      0            0.649
+INFO  [17:05:17.859] [bbotk]                                 uhash
+INFO  [17:05:17.859] [bbotk]  c4df7003-665a-4264-98f7-2adfaa090faa
+INFO  [17:05:17.868] [bbotk] Finished optimizing after 10 evaluation(s)
+INFO  [17:05:17.868] [bbotk] Result:
+INFO  [17:05:17.869] [bbotk]  nrounds       eta max_depth learner_param_vals  x_domain classif.ce
+INFO  [17:05:17.869] [bbotk]    <int>     <num>     <int>             <list>    <list>      <num>
+INFO  [17:05:17.869] [bbotk]       92 0.1813689         3          <list[5]> <list[3]>  0.1343554
+[1] -13.72927
+[1] 31.40875
+
+### [bt]: Job terminated successfully [batchtools job.id=1902]
+### [bt]: Starting job [batchtools job.id=1903]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1903 (seed = 1904) ...
+INFO  [17:05:18.572] [mlr3] Applying learner 'classif.xgboost.tuned_calib.tunefirst.oof_beta' on task 'kc1' (iter 3/10)
+INFO  [17:05:18.630] [bbotk] Starting to optimize 3 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=10, k=0]'
+INFO  [17:05:18.654] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:19.885] [bbotk] Result of batch 1:
+INFO  [17:05:19.886] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:19.886] [bbotk]      270 0.08516203         5  0.1517421        0      0            1.177
+INFO  [17:05:19.886] [bbotk]                                 uhash
+INFO  [17:05:19.886] [bbotk]  14fd7482-e8d2-487e-b924-cdbc60be438f
+INFO  [17:05:19.890] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:20.216] [bbotk] Result of batch 2:
+INFO  [17:05:20.217] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:20.217] [bbotk]      159 0.05956853         2  0.1369892        0      0             0.25
+INFO  [17:05:20.217] [bbotk]                                 uhash
+INFO  [17:05:20.217] [bbotk]  ceb7b8fa-9aa8-4a13-ad13-a899708c7e86
+INFO  [17:05:20.221] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:20.756] [bbotk] Result of batch 3:
+INFO  [17:05:20.758] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:20.758] [bbotk]      112 0.2834308         5  0.1543784        0      0            0.491
+INFO  [17:05:20.758] [bbotk]                                 uhash
+INFO  [17:05:20.758] [bbotk]  46622362-817a-4a53-84d2-08c36c675983
+INFO  [17:05:20.765] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:22.648] [bbotk] Result of batch 4:
+INFO  [17:05:22.650] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:22.650] [bbotk]      238 0.05984505        10  0.1522728        0      0            1.829
+INFO  [17:05:22.650] [bbotk]                                 uhash
+INFO  [17:05:22.650] [bbotk]  0baa77b0-408a-46e3-a942-a43180cf1cce
+INFO  [17:05:22.659] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:23.528] [bbotk] Result of batch 5:
+INFO  [17:05:23.530] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:23.530] [bbotk]      250 0.1227018         4  0.1422651        0      0            0.831
+INFO  [17:05:23.530] [bbotk]                                 uhash
+INFO  [17:05:23.530] [bbotk]  d20b1144-a090-4fb3-a177-48c9b3d63c3f
+INFO  [17:05:23.542] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:23.876] [bbotk] Result of batch 6:
+INFO  [17:05:23.877] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:23.877] [bbotk]      187 0.1538395         2  0.1401487        0      0            0.298
+INFO  [17:05:23.877] [bbotk]                                 uhash
+INFO  [17:05:23.877] [bbotk]  7f49f11a-d875-4d76-b084-821c43003d3d
+INFO  [17:05:23.881] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:25.284] [bbotk] Result of batch 7:
+INFO  [17:05:25.285] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:25.285] [bbotk]      205 0.2107077         9  0.1591211        0      0            1.372
+INFO  [17:05:25.285] [bbotk]                                 uhash
+INFO  [17:05:25.285] [bbotk]  cdc42582-562d-4f45-bb1c-c748a551676b
+INFO  [17:05:25.289] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:25.962] [bbotk] Result of batch 8:
+INFO  [17:05:25.964] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:25.964] [bbotk]       81 0.2300422        10  0.1585928        0      0            0.618
+INFO  [17:05:25.964] [bbotk]                                 uhash
+INFO  [17:05:25.964] [bbotk]  c94382d3-32c2-4a88-91cc-2b769e505c8e
+INFO  [17:05:25.968] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:26.644] [bbotk] Result of batch 9:
+INFO  [17:05:26.646] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:26.646] [bbotk]      112 0.1577932         6  0.1543792        0      0             0.63
+INFO  [17:05:26.646] [bbotk]                                 uhash
+INFO  [17:05:26.646] [bbotk]  359253c1-3654-47d7-903c-1363c6f15672
+INFO  [17:05:26.658] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:27.149] [bbotk] Result of batch 10:
+INFO  [17:05:27.150] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:27.150] [bbotk]       97 0.1387041         5  0.1485825        0      0            0.445
+INFO  [17:05:27.150] [bbotk]                                 uhash
+INFO  [17:05:27.150] [bbotk]  e05fd7fa-e5cd-4084-ae27-91bae4a7accd
+INFO  [17:05:27.158] [bbotk] Finished optimizing after 10 evaluation(s)
+INFO  [17:05:27.158] [bbotk] Result:
+INFO  [17:05:27.159] [bbotk]  nrounds        eta max_depth learner_param_vals  x_domain classif.ce
+INFO  [17:05:27.159] [bbotk]    <int>      <num>     <int>             <list>    <list>      <num>
+INFO  [17:05:27.159] [bbotk]      159 0.05956853         2          <list[5]> <list[3]>  0.1369892
+[1] -23.05727
+[1] 39.8626
+
+### [bt]: Job terminated successfully [batchtools job.id=1903]
+### [bt]: Starting job [batchtools job.id=1904]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1904 (seed = 1905) ...
+INFO  [17:05:27.934] [mlr3] Applying learner 'classif.xgboost.tuned_calib.tunefirst.oof_beta' on task 'kc1' (iter 4/10)
+INFO  [17:05:27.991] [bbotk] Starting to optimize 3 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=10, k=0]'
+INFO  [17:05:28.001] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:29.091] [bbotk] Result of batch 1:
+INFO  [17:05:29.092] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:29.092] [bbotk]      163 0.2920259         9  0.1627947        0      0            1.043
+INFO  [17:05:29.092] [bbotk]                                 uhash
+INFO  [17:05:29.092] [bbotk]  9c36dbd4-ac5b-4297-9bea-b3c977bdd306
+INFO  [17:05:29.096] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:29.718] [bbotk] Result of batch 2:
+INFO  [17:05:29.720] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:29.720] [bbotk]      227 0.05138112         3  0.1485709        0      0            0.575
+INFO  [17:05:29.720] [bbotk]                                 uhash
+INFO  [17:05:29.720] [bbotk]  f4fac8c5-9a2a-4f46-b14c-608ddef40fb2
+INFO  [17:05:29.726] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:29.948] [bbotk] Result of batch 3:
+INFO  [17:05:29.950] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:29.950] [bbotk]       96 0.06081633         2  0.1464603        0      0            0.194
+INFO  [17:05:29.950] [bbotk]                                 uhash
+INFO  [17:05:29.950] [bbotk]  26dcd277-448a-42fe-8411-103570e3fdb3
+INFO  [17:05:29.960] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:30.986] [bbotk] Result of batch 4:
+INFO  [17:05:30.988] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:30.988] [bbotk]      244 0.2290049         5  0.1538401        0      0            0.979
+INFO  [17:05:30.988] [bbotk]                                 uhash
+INFO  [17:05:30.988] [bbotk]  569db8ab-9890-43b2-853f-f0314aa69964
+INFO  [17:05:30.994] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:32.216] [bbotk] Result of batch 5:
+INFO  [17:05:32.217] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:32.217] [bbotk]      194 0.1963491         8  0.1591102        0      0            1.176
+INFO  [17:05:32.217] [bbotk]                                 uhash
+INFO  [17:05:32.217] [bbotk]  fcb155c4-3ad4-4481-8217-9a122969a2db
+INFO  [17:05:32.222] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:32.400] [bbotk] Result of batch 6:
+INFO  [17:05:32.402] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:32.402] [bbotk]       61 0.1197266         2  0.1464637        0      0            0.114
+INFO  [17:05:32.402] [bbotk]                                 uhash
+INFO  [17:05:32.402] [bbotk]  0938e551-7c12-4d11-9059-fb892b5ca07e
+INFO  [17:05:32.413] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:33.181] [bbotk] Result of batch 7:
+INFO  [17:05:33.182] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:33.182] [bbotk]      262 0.1250649         3   0.147516        0      0            0.728
+INFO  [17:05:33.182] [bbotk]                                 uhash
+INFO  [17:05:33.182] [bbotk]  d62e31c5-da6a-44a8-8292-0f7d6df3afc8
+INFO  [17:05:33.191] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:34.526] [bbotk] Result of batch 8:
+INFO  [17:05:34.527] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:34.527] [bbotk]      266 0.1371669         6  0.1543651        0      0            1.293
+INFO  [17:05:34.527] [bbotk]                                 uhash
+INFO  [17:05:34.527] [bbotk]  12522e29-f66f-4895-b631-94097e94fbe3
+INFO  [17:05:34.532] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:35.848] [bbotk] Result of batch 9:
+INFO  [17:05:35.858] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:35.858] [bbotk]      292 0.04494164         5  0.1527861        0      0            1.262
+INFO  [17:05:35.858] [bbotk]                                 uhash
+INFO  [17:05:35.858] [bbotk]  712b36e9-2f3a-48d5-9776-2fa860c4f6c2
+INFO  [17:05:35.866] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:36.389] [bbotk] Result of batch 10:
+INFO  [17:05:36.390] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:36.390] [bbotk]       78 0.2617751         8  0.1569972        0      0            0.482
+INFO  [17:05:36.390] [bbotk]                                 uhash
+INFO  [17:05:36.390] [bbotk]  570805c9-2807-49d4-8dae-0e8f7f83a533
+INFO  [17:05:36.404] [bbotk] Finished optimizing after 10 evaluation(s)
+INFO  [17:05:36.410] [bbotk] Result:
+INFO  [17:05:36.411] [bbotk]  nrounds        eta max_depth learner_param_vals  x_domain classif.ce
+INFO  [17:05:36.411] [bbotk]    <int>      <num>     <int>             <list>    <list>      <num>
+INFO  [17:05:36.411] [bbotk]       96 0.06081633         2          <list[5]> <list[3]>  0.1464603
+[1] -30.55214
+[1] 41.2226
+
+### [bt]: Job terminated successfully [batchtools job.id=1904]
+### [bt]: Starting job [batchtools job.id=1905]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1905 (seed = 1906) ...
+INFO  [17:05:36.929] [mlr3] Applying learner 'classif.xgboost.tuned_calib.tunefirst.oof_beta' on task 'kc1' (iter 5/10)
+INFO  [17:05:36.964] [bbotk] Starting to optimize 3 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=10, k=0]'
+INFO  [17:05:36.980] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:37.574] [bbotk] Result of batch 1:
+INFO  [17:05:37.575] [bbotk]  nrounds     eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:37.575] [bbotk]      122 0.23999         5  0.1464695        0      0            0.555
+INFO  [17:05:37.575] [bbotk]                                 uhash
+INFO  [17:05:37.575] [bbotk]  44faad15-0d28-4476-b812-b7a19d4d008c
+INFO  [17:05:37.579] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:38.008] [bbotk] Result of batch 2:
+INFO  [17:05:38.010] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:38.010] [bbotk]      202 0.2666818         2   0.145413        0      0            0.382
+INFO  [17:05:38.010] [bbotk]                                 uhash
+INFO  [17:05:38.010] [bbotk]  86d24083-a223-4963-8c59-14229e32129c
+INFO  [17:05:38.022] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:38.825] [bbotk] Result of batch 3:
+INFO  [17:05:38.826] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:38.826] [bbotk]      155 0.09944519         6    0.14278        0      0            0.759
+INFO  [17:05:38.826] [bbotk]                                 uhash
+INFO  [17:05:38.826] [bbotk]  18341ae0-12b8-42a3-a1c8-da52776580a3
+INFO  [17:05:38.837] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:39.329] [bbotk] Result of batch 4:
+INFO  [17:05:39.331] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:39.331] [bbotk]      260 0.05319981         2  0.1459412        0      0            0.442
+INFO  [17:05:39.331] [bbotk]                                 uhash
+INFO  [17:05:39.331] [bbotk]  4c78dfac-e60d-46d6-a0ce-8171e1ac60a6
+INFO  [17:05:39.339] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:40.440] [bbotk] Result of batch 5:
+INFO  [17:05:40.442] [bbotk]  nrounds        eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:40.442] [bbotk]      263 0.09577955         5  0.1454113        0      0            1.042
+INFO  [17:05:40.442] [bbotk]                                 uhash
+INFO  [17:05:40.442] [bbotk]  6536640d-e453-469a-8ea4-1ffe1657187e
+INFO  [17:05:40.458] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:40.748] [bbotk] Result of batch 6:
+INFO  [17:05:40.749] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:40.749] [bbotk]       96 0.2885855         3  0.1406728        0      0            0.246
+INFO  [17:05:40.749] [bbotk]                                 uhash
+INFO  [17:05:40.749] [bbotk]  70637427-dced-4982-a651-7e50c0061023
+INFO  [17:05:40.753] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:41.187] [bbotk] Result of batch 7:
+INFO  [17:05:41.189] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:41.189] [bbotk]      200 0.1475476         2  0.1417277        0      0            0.397
+INFO  [17:05:41.189] [bbotk]                                 uhash
+INFO  [17:05:41.189] [bbotk]  e3add8e6-e125-4c5f-852b-db885b057ac3
+INFO  [17:05:41.193] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:43.008] [bbotk] Result of batch 8:
+INFO  [17:05:43.009] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:43.009] [bbotk]      280 0.2660974         9  0.1469911        0      0            1.773
+INFO  [17:05:43.009] [bbotk]                                 uhash
+INFO  [17:05:43.009] [bbotk]  7b5e80d5-ff1a-4b9e-b28c-440dccc2836c
+INFO  [17:05:43.019] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:45.123] [bbotk] Result of batch 9:
+INFO  [17:05:45.124] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:45.124] [bbotk]      278 0.1308187        10  0.1459404        0      0            2.061
+INFO  [17:05:45.124] [bbotk]                                 uhash
+INFO  [17:05:45.124] [bbotk]  5c771c74-48d8-4f08-8fc0-4150888bc225
+INFO  [17:05:45.128] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:05:46.499] [bbotk] Result of batch 10:
+INFO  [17:05:46.500] [bbotk]  nrounds       eta max_depth classif.ce warnings errors runtime_learners
+INFO  [17:05:46.500] [bbotk]      264 0.2501378         6  0.1433074        0      0            1.329
+INFO  [17:05:46.500] [bbotk]                                 uhash
+INFO  [17:05:46.500] [bbotk]  003dc000-69fd-4a76-9cd0-e75e0786934a
+INFO  [17:05:46.508] [bbotk] Finished optimizing after 10 evaluation(s)
+INFO  [17:05:46.508] [bbotk] Result:
+INFO  [17:05:46.509] [bbotk]  nrounds       eta max_depth learner_param_vals  x_domain classif.ce
+INFO  [17:05:46.509] [bbotk]    <int>     <num>     <int>             <list>    <list>      <num>
+INFO  [17:05:46.509] [bbotk]       96 0.2885855         3          <list[5]> <list[3]>  0.1406728
+[1] -21.29274
+[1] 27.69043
+
+### [bt]: Job terminated successfully [batchtools job.id=1905]
+### [bt]: Calculation finished!

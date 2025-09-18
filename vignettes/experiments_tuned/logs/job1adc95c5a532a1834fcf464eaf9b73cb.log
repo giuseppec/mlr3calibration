@@ -1,0 +1,230 @@
+### [bt]: This is batchtools v0.9.17
+### [bt]: Starting calculation of 5 jobs
+### [bt]: Setting working directory to '/Users/User/Documents/Studium/Semester8/Hiwi/mlr3calibration/vignettes'
+### [bt]: Memory measurement disabled
+### [bt]: Starting job [batchtools job.id=3251]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3251 (seed = 3252) ...
+INFO  [17:30:21.306] [mlr3] Applying learner 'classif.ranger.tuned' on task 'banknote-authentication' (iter 1/10)
+INFO  [17:30:21.346] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:30:21.351] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:21.355] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:21.361] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:21.454] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:21.538] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:21.629] [mlr3] Finished benchmark
+INFO  [17:30:21.643] [bbotk] Result of batch 1:
+INFO  [17:30:21.644] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:21.644] [bbotk]        365 0.007293365        0      0            0.247
+INFO  [17:30:21.644] [bbotk]                                 uhash
+INFO  [17:30:21.644] [bbotk]  fcbe8039-fb78-496d-ae95-4df050c6f15e
+INFO  [17:30:21.646] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:21.648] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:21.650] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:21.711] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:21.769] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:21.831] [mlr3] Finished benchmark
+INFO  [17:30:21.846] [bbotk] Result of batch 2:
+INFO  [17:30:21.847] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:21.847] [bbotk]        207 0.008104395        0      0            0.158
+INFO  [17:30:21.847] [bbotk]                                 uhash
+INFO  [17:30:21.847] [bbotk]  5302c059-2c4d-4be7-b584-b44e3e95fd00
+INFO  [17:30:21.849] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:21.851] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:21.853] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:21.922] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:21.992] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:22.058] [mlr3] Finished benchmark
+INFO  [17:30:22.075] [bbotk] Result of batch 3:
+INFO  [17:30:22.076] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:22.076] [bbotk]        258 0.007293365        0      0            0.182
+INFO  [17:30:22.076] [bbotk]                                 uhash
+INFO  [17:30:22.076] [bbotk]  97828244-6002-4e5a-b1b4-100dfcf965fa
+INFO  [17:30:22.082] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:30:22.082] [bbotk] Result:
+INFO  [17:30:22.083] [bbotk]  num.trees learner_param_vals  x_domain  classif.ce
+INFO  [17:30:22.083] [bbotk]      <int>             <list>    <list>       <num>
+INFO  [17:30:22.083] [bbotk]        365          <list[2]> <list[1]> 0.007293365
+
+### [bt]: Job terminated successfully [batchtools job.id=3251]
+### [bt]: Starting job [batchtools job.id=3252]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3252 (seed = 3253) ...
+INFO  [17:30:22.193] [mlr3] Applying learner 'classif.ranger.tuned' on task 'banknote-authentication' (iter 2/10)
+INFO  [17:30:22.217] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:30:22.222] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:22.224] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:22.227] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:22.303] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:22.381] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:22.461] [mlr3] Finished benchmark
+INFO  [17:30:22.475] [bbotk] Result of batch 1:
+INFO  [17:30:22.476] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:30:22.476] [bbotk]        322 0.01457098        0      0            0.215
+INFO  [17:30:22.476] [bbotk]                                 uhash
+INFO  [17:30:22.476] [bbotk]  f27467be-edae-4538-9f59-6dde7dcad586
+INFO  [17:30:22.478] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:22.481] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:22.483] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:22.572] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:22.661] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:22.745] [mlr3] Finished benchmark
+INFO  [17:30:22.756] [bbotk] Result of batch 2:
+INFO  [17:30:22.757] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:30:22.757] [bbotk]        373 0.01457098        0      0            0.244
+INFO  [17:30:22.757] [bbotk]                                 uhash
+INFO  [17:30:22.757] [bbotk]  73d69c74-da13-4055-8b05-d8fe210a4614
+INFO  [17:30:22.759] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:22.761] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:22.763] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:22.817] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:22.874] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:22.938] [mlr3] Finished benchmark
+INFO  [17:30:22.955] [bbotk] Result of batch 3:
+INFO  [17:30:22.956] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:30:22.956] [bbotk]        193 0.01295286        0      0            0.151
+INFO  [17:30:22.956] [bbotk]                                 uhash
+INFO  [17:30:22.956] [bbotk]  b9c9b897-5615-4e17-be8d-76542ddca9b7
+INFO  [17:30:22.962] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:30:22.963] [bbotk] Result:
+INFO  [17:30:22.963] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:30:22.963] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:30:22.963] [bbotk]        193          <list[2]> <list[1]> 0.01295286
+
+### [bt]: Job terminated successfully [batchtools job.id=3252]
+### [bt]: Starting job [batchtools job.id=3253]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3253 (seed = 3254) ...
+INFO  [17:30:23.084] [mlr3] Applying learner 'classif.ranger.tuned' on task 'banknote-authentication' (iter 3/10)
+INFO  [17:30:23.116] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:30:23.121] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:23.123] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:23.125] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:23.207] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:23.290] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:23.376] [mlr3] Finished benchmark
+INFO  [17:30:23.389] [bbotk] Result of batch 1:
+INFO  [17:30:23.390] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:23.390] [bbotk]        351 0.008098489        0      0            0.232
+INFO  [17:30:23.390] [bbotk]                                 uhash
+INFO  [17:30:23.390] [bbotk]  87401205-8cb1-4624-b3db-9a73c3041676
+INFO  [17:30:23.392] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:23.395] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:23.400] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:23.504] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:23.601] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:23.698] [mlr3] Finished benchmark
+INFO  [17:30:23.711] [bbotk] Result of batch 2:
+INFO  [17:30:23.712] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:23.712] [bbotk]        389 0.007289427        0      0            0.273
+INFO  [17:30:23.712] [bbotk]                                 uhash
+INFO  [17:30:23.712] [bbotk]  8da93d5e-e700-473f-bdd4-e58f1cc0217b
+INFO  [17:30:23.714] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:23.717] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:23.719] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:23.792] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:23.865] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:23.921] [mlr3] Finished benchmark
+INFO  [17:30:23.936] [bbotk] Result of batch 3:
+INFO  [17:30:23.937] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:23.937] [bbotk]        264 0.007289427        0      0            0.179
+INFO  [17:30:23.937] [bbotk]                                 uhash
+INFO  [17:30:23.937] [bbotk]  33e37235-2df6-4006-8a98-f29200d336f3
+INFO  [17:30:23.948] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:30:23.949] [bbotk] Result:
+INFO  [17:30:23.950] [bbotk]  num.trees learner_param_vals  x_domain  classif.ce
+INFO  [17:30:23.950] [bbotk]      <int>             <list>    <list>       <num>
+INFO  [17:30:23.950] [bbotk]        389          <list[2]> <list[1]> 0.007289427
+
+### [bt]: Job terminated successfully [batchtools job.id=3253]
+### [bt]: Starting job [batchtools job.id=3254]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3254 (seed = 3255) ...
+INFO  [17:30:24.098] [mlr3] Applying learner 'classif.ranger.tuned' on task 'banknote-authentication' (iter 4/10)
+INFO  [17:30:24.122] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:30:24.129] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:24.131] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:24.133] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:24.176] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:24.216] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:24.255] [mlr3] Finished benchmark
+INFO  [17:30:24.269] [bbotk] Result of batch 1:
+INFO  [17:30:24.269] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:30:24.269] [bbotk]        106 0.01214576        0      0            0.096
+INFO  [17:30:24.269] [bbotk]                                 uhash
+INFO  [17:30:24.269] [bbotk]  bcb5b696-3105-4172-8c8b-b5dd2893daec
+INFO  [17:30:24.271] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:24.273] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:24.276] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:24.371] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:24.478] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:24.568] [mlr3] Finished benchmark
+INFO  [17:30:24.582] [bbotk] Result of batch 2:
+INFO  [17:30:24.583] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:24.583] [bbotk]        416 0.008909519        0      0             0.27
+INFO  [17:30:24.583] [bbotk]                                 uhash
+INFO  [17:30:24.583] [bbotk]  a999df47-3934-453c-87b8-6ff1f6e7542c
+INFO  [17:30:24.587] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:24.593] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:24.596] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:24.650] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:24.698] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:24.743] [mlr3] Finished benchmark
+INFO  [17:30:24.758] [bbotk] Result of batch 3:
+INFO  [17:30:24.758] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:30:24.758] [bbotk]        181  0.0113367        0      0            0.128
+INFO  [17:30:24.758] [bbotk]                                 uhash
+INFO  [17:30:24.758] [bbotk]  4aa0f499-9602-4c5f-ac51-725d42ae7955
+INFO  [17:30:24.765] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:30:24.765] [bbotk] Result:
+INFO  [17:30:24.766] [bbotk]  num.trees learner_param_vals  x_domain  classif.ce
+INFO  [17:30:24.766] [bbotk]      <int>             <list>    <list>       <num>
+INFO  [17:30:24.766] [bbotk]        416          <list[2]> <list[1]> 0.008909519
+
+### [bt]: Job terminated successfully [batchtools job.id=3254]
+### [bt]: Starting job [batchtools job.id=3255]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3255 (seed = 3256) ...
+INFO  [17:30:24.890] [mlr3] Applying learner 'classif.ranger.tuned' on task 'banknote-authentication' (iter 5/10)
+INFO  [17:30:24.917] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:30:24.921] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:24.923] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:24.926] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:24.978] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:25.028] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:25.097] [mlr3] Finished benchmark
+INFO  [17:30:25.116] [bbotk] Result of batch 1:
+INFO  [17:30:25.118] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:25.118] [bbotk]        181 0.008911487        0      0            0.147
+INFO  [17:30:25.118] [bbotk]                                 uhash
+INFO  [17:30:25.118] [bbotk]  e1a88c69-20e7-4e93-9dde-0c137030b754
+INFO  [17:30:25.122] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:25.125] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:25.128] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:25.191] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:25.250] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:25.311] [mlr3] Finished benchmark
+INFO  [17:30:25.331] [bbotk] Result of batch 2:
+INFO  [17:30:25.332] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:30:25.332] [bbotk]        218 0.008911487        0      0             0.16
+INFO  [17:30:25.332] [bbotk]                                 uhash
+INFO  [17:30:25.332] [bbotk]  d761d488-69bd-4c8b-a3e9-7274c9d3d99a
+INFO  [17:30:25.334] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:30:25.336] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [17:30:25.339] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 1/3)
+INFO  [17:30:25.388] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 2/3)
+INFO  [17:30:25.440] [mlr3] Applying learner 'classif.ranger' on task 'banknote-authentication' (iter 3/3)
+INFO  [17:30:25.477] [mlr3] Finished benchmark
+INFO  [17:30:25.491] [bbotk] Result of batch 3:
+INFO  [17:30:25.492] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:30:25.492] [bbotk]        110 0.01052961        0      0            0.113
+INFO  [17:30:25.492] [bbotk]                                 uhash
+INFO  [17:30:25.492] [bbotk]  afbdcfcd-2bf8-4fc3-afb0-0a3da4068421
+INFO  [17:30:25.498] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:30:25.498] [bbotk] Result:
+INFO  [17:30:25.499] [bbotk]  num.trees learner_param_vals  x_domain  classif.ce
+INFO  [17:30:25.499] [bbotk]      <int>             <list>    <list>       <num>
+INFO  [17:30:25.499] [bbotk]        181          <list[2]> <list[1]> 0.008911487
+
+### [bt]: Job terminated successfully [batchtools job.id=3255]
+### [bt]: Calculation finished!

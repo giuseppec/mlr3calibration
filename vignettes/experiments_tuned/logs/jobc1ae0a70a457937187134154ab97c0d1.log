@@ -1,0 +1,273 @@
+### [bt]: This is batchtools v0.9.17
+### [bt]: Starting calculation of 5 jobs
+### [bt]: Setting working directory to '/Users/User/Documents/Studium/Semester8/Hiwi/mlr3calibration/vignettes'
+### [bt]: Memory measurement disabled
+### [bt]: Starting job [batchtools job.id=3366]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3366 (seed = 3367) ...
+INFO  [17:31:15.391] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.perfold_beta' on task 'banknote-authentication' (iter 6/10)
+INFO  [17:31:15.449] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:31:15.458] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:15.836] [bbotk] Result of batch 1:
+INFO  [17:31:15.837] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:31:15.837] [bbotk]        435 0.01052764        0      0            0.339
+INFO  [17:31:15.837] [bbotk]                                 uhash
+INFO  [17:31:15.837] [bbotk]  342de853-17ea-4c32-8b44-25a47284b99b
+INFO  [17:31:15.839] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:16.100] [bbotk] Result of batch 2:
+INFO  [17:31:16.101] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:31:16.101] [bbotk]        365 0.01295483        0      0            0.231
+INFO  [17:31:16.101] [bbotk]                                 uhash
+INFO  [17:31:16.101] [bbotk]  34403d2e-c9a2-4caa-a98d-ae7a38a1c3e0
+INFO  [17:31:16.104] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:16.404] [bbotk] Result of batch 3:
+INFO  [17:31:16.405] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:31:16.405] [bbotk]        400  0.0113367        0      0            0.266
+INFO  [17:31:16.405] [bbotk]                                 uhash
+INFO  [17:31:16.405] [bbotk]  3b617d13-9b7f-4e50-80f2-80e8ebe21418
+INFO  [17:31:16.416] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:31:16.416] [bbotk] Result:
+INFO  [17:31:16.417] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:31:16.417] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:31:16.417] [bbotk]        435          <list[2]> <list[1]> 0.01052764
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -118.1948
+[1] 93.20448
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -112.0485
+[1] 99.25363
+Warning: glm.fit: algorithm did not converge
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: algorithm did not converge
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -1608.862
+[1] -45.23218
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -32.01052
+[1] 170.4943
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -86.24334
+[1] 73.16347
+
+### [bt]: Job terminated successfully [batchtools job.id=3366]
+### [bt]: Starting job [batchtools job.id=3367]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3367 (seed = 3368) ...
+INFO  [17:31:17.312] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.perfold_beta' on task 'banknote-authentication' (iter 7/10)
+INFO  [17:31:17.358] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:31:17.366] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:17.522] [bbotk] Result of batch 1:
+INFO  [17:31:17.523] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:17.523] [bbotk]        131 0.009710706        0      0             0.11
+INFO  [17:31:17.523] [bbotk]                                 uhash
+INFO  [17:31:17.523] [bbotk]  f5bfb64f-70ca-46ce-bd96-fb92a09c689c
+INFO  [17:31:17.529] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:17.922] [bbotk] Result of batch 2:
+INFO  [17:31:17.922] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:17.922] [bbotk]        330 0.008901645        0      0            0.349
+INFO  [17:31:17.922] [bbotk]                                 uhash
+INFO  [17:31:17.922] [bbotk]  935b5826-7472-48af-9d80-b0a088408fb4
+INFO  [17:31:17.924] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:18.200] [bbotk] Result of batch 3:
+INFO  [17:31:18.201] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:18.201] [bbotk]        282 0.008092583        0      0            0.213
+INFO  [17:31:18.201] [bbotk]                                 uhash
+INFO  [17:31:18.201] [bbotk]  94ae64f7-b5be-4b57-abcc-6d84c861edcb
+INFO  [17:31:18.210] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:31:18.211] [bbotk] Result:
+INFO  [17:31:18.213] [bbotk]  num.trees learner_param_vals  x_domain  classif.ce
+INFO  [17:31:18.213] [bbotk]      <int>             <list>    <list>       <num>
+INFO  [17:31:18.213] [bbotk]        282          <list[2]> <list[1]> 0.008092583
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -59.34432
+[1] 97.12317
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -155.5435
+[1] 138.7057
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -7.765666e+15
+[1] -6.768438e+13
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -46.94735
+[1] 154.8806
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -132.1968
+[1] 38.16913
+
+### [bt]: Job terminated successfully [batchtools job.id=3367]
+### [bt]: Starting job [batchtools job.id=3368]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3368 (seed = 3369) ...
+INFO  [17:31:18.964] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.perfold_beta' on task 'banknote-authentication' (iter 8/10)
+INFO  [17:31:19.055] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:31:19.065] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:19.486] [bbotk] Result of batch 1:
+INFO  [17:31:19.487] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:31:19.487] [bbotk]        477 0.00728549        0      0            0.328
+INFO  [17:31:19.487] [bbotk]                                 uhash
+INFO  [17:31:19.487] [bbotk]  5f73afbb-dada-4830-affc-d4726c2528be
+INFO  [17:31:19.491] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:19.876] [bbotk] Result of batch 2:
+INFO  [17:31:19.883] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:19.883] [bbotk]        449 0.008903613        0      0            0.326
+INFO  [17:31:19.883] [bbotk]                                 uhash
+INFO  [17:31:19.883] [bbotk]  308a2fc1-334f-4da1-9379-6d6270c797a1
+INFO  [17:31:19.888] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:20.143] [bbotk] Result of batch 3:
+INFO  [17:31:20.144] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:20.144] [bbotk]        147 0.006476429        0      0            0.145
+INFO  [17:31:20.144] [bbotk]                                 uhash
+INFO  [17:31:20.144] [bbotk]  572e94fc-3d8d-40fe-bf13-8bb12ed9df71
+INFO  [17:31:20.165] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:31:20.166] [bbotk] Result:
+INFO  [17:31:20.166] [bbotk]  num.trees learner_param_vals  x_domain  classif.ce
+INFO  [17:31:20.166] [bbotk]      <int>             <list>    <list>       <num>
+INFO  [17:31:20.166] [bbotk]        147          <list[2]> <list[1]> 0.006476429
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -125.8123
+[1] 44.51685
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -9.757345e+15
+[1] 2.006697e+15
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -100.4696
+[1] 106.0128
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -44.38943
+[1] 153.9587
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -327.596
+[1] 148.235
+
+### [bt]: Job terminated successfully [batchtools job.id=3368]
+### [bt]: Starting job [batchtools job.id=3369]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3369 (seed = 3370) ...
+INFO  [17:31:20.770] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.perfold_beta' on task 'banknote-authentication' (iter 9/10)
+INFO  [17:31:20.830] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:31:20.834] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:21.178] [bbotk] Result of batch 1:
+INFO  [17:31:21.195] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:21.195] [bbotk]        468 0.009712675        0      0            0.296
+INFO  [17:31:21.195] [bbotk]                                 uhash
+INFO  [17:31:21.195] [bbotk]  ee02caf7-93f6-4cce-a81d-003523f216a2
+INFO  [17:31:21.199] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:21.398] [bbotk] Result of batch 2:
+INFO  [17:31:21.399] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:21.399] [bbotk]        203 0.009712675        0      0            0.151
+INFO  [17:31:21.399] [bbotk]                                 uhash
+INFO  [17:31:21.399] [bbotk]  f0369747-6d36-4685-8891-26129b6cf069
+INFO  [17:31:21.401] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:21.733] [bbotk] Result of batch 3:
+INFO  [17:31:21.735] [bbotk]  num.trees  classif.ce warnings errors runtime_learners
+INFO  [17:31:21.735] [bbotk]        432 0.008903613        0      0            0.282
+INFO  [17:31:21.735] [bbotk]                                 uhash
+INFO  [17:31:21.735] [bbotk]  70ea33f8-1f74-4318-88bb-64b23b5cd044
+INFO  [17:31:21.750] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:31:21.750] [bbotk] Result:
+INFO  [17:31:21.751] [bbotk]  num.trees learner_param_vals  x_domain  classif.ce
+INFO  [17:31:21.751] [bbotk]      <int>             <list>    <list>       <num>
+INFO  [17:31:21.751] [bbotk]        432          <list[2]> <list[1]> 0.008903613
+Warning: glm.fit: algorithm did not converge
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: algorithm did not converge
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -1526.956
+[1] -28.90985
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -126.1942
+[1] 147.5441
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -81.18192
+[1] 116.0982
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -91.58592
+[1] 322.0484
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -146.4554
+[1] 37.24063
+
+### [bt]: Job terminated successfully [batchtools job.id=3369]
+### [bt]: Starting job [batchtools job.id=3370]
+### [bt]: Generating problem instance for problem '6fbfe6520e3d949c' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6fbfe6520e3d949c' for job 3370 (seed = 3371) ...
+INFO  [17:31:22.722] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.perfold_beta' on task 'banknote-authentication' (iter 10/10)
+INFO  [17:31:22.789] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:31:22.798] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:23.030] [bbotk] Result of batch 1:
+INFO  [17:31:23.031] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:31:23.031] [bbotk]        271 0.01053158        0      0            0.194
+INFO  [17:31:23.031] [bbotk]                                 uhash
+INFO  [17:31:23.031] [bbotk]  a0301a07-9026-4271-ba07-94f9a65b3cc6
+INFO  [17:31:23.033] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:23.209] [bbotk] Result of batch 2:
+INFO  [17:31:23.211] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:31:23.211] [bbotk]        175 0.01133867        0      0            0.135
+INFO  [17:31:23.211] [bbotk]                                 uhash
+INFO  [17:31:23.211] [bbotk]  07753d32-3822-4296-a973-bd1ae7cd8758
+INFO  [17:31:23.213] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:31:23.412] [bbotk] Result of batch 3:
+INFO  [17:31:23.413] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:31:23.413] [bbotk]        205  0.0113367        0      0            0.152
+INFO  [17:31:23.413] [bbotk]                                 uhash
+INFO  [17:31:23.413] [bbotk]  2abdb99f-1ee0-4a98-b495-43115db10e19
+INFO  [17:31:23.423] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:31:23.423] [bbotk] Result:
+INFO  [17:31:23.424] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:31:23.424] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:31:23.424] [bbotk]        271          <list[2]> <list[1]> 0.01053158
+Warning: glm.fit: algorithm did not converge
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: algorithm did not converge
+This happened PipeOp classif.ranger's $train()
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -2607.18
+[1] -55.00817
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -71.09953
+[1] 84.79438
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -44.91485
+[1] 87.29723
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -58.87828
+[1] 89.63222
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+This happened PipeOp classif.ranger's $train()
+[1] -133.3186
+[1] 106.8197
+
+### [bt]: Job terminated successfully [batchtools job.id=3370]
+### [bt]: Calculation finished!

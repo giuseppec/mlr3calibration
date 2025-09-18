@@ -1,0 +1,155 @@
+### [bt]: This is batchtools v0.9.17
+### [bt]: Starting calculation of 5 jobs
+### [bt]: Setting working directory to '/Users/User/Documents/Studium/Semester8/Hiwi/mlr3calibration/vignettes'
+### [bt]: Memory measurement disabled
+### [bt]: Starting job [batchtools job.id=101]
+### [bt]: Generating problem instance for problem '70bd5a65df34c4f3' ...
+### [bt]: Applying algorithm 'run_learner' on problem '70bd5a65df34c4f3' for job 101 (seed = 102) ...
+INFO  [16:38:26.260] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_platt' on task 'kr-vs-kp' (iter 1/10)
+INFO  [16:38:26.310] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [16:38:26.323] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:27.324] [bbotk] Result of batch 1:
+INFO  [16:38:27.325] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:27.325] [bbotk]  0.5538069  0.1206604        0      0            0.953
+INFO  [16:38:27.325] [bbotk]                                 uhash
+INFO  [16:38:27.325] [bbotk]  53e7f0f5-2527-495d-b605-64ad57fd3230
+INFO  [16:38:27.331] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:28.224] [bbotk] Result of batch 2:
+INFO  [16:38:28.225] [bbotk]   laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:28.225] [bbotk]  0.242089  0.1206604        0      0            0.839
+INFO  [16:38:28.225] [bbotk]                                 uhash
+INFO  [16:38:28.225] [bbotk]  ecd4ac27-7960-4d4a-93f1-fd0d49e24b1e
+INFO  [16:38:28.227] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:29.118] [bbotk] Result of batch 3:
+INFO  [16:38:29.119] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:29.119] [bbotk]  0.1561023  0.1206604        0      0            0.843
+INFO  [16:38:29.119] [bbotk]                                 uhash
+INFO  [16:38:29.119] [bbotk]  a20d6f5d-7d7b-4b42-8457-6571fed81697
+INFO  [16:38:29.126] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [16:38:29.126] [bbotk] Result:
+INFO  [16:38:29.127] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [16:38:29.127] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [16:38:29.127] [bbotk]  0.5538069          <list[1]> <list[1]>  0.1206604
+
+### [bt]: Job terminated successfully [batchtools job.id=101]
+### [bt]: Starting job [batchtools job.id=102]
+### [bt]: Generating problem instance for problem '70bd5a65df34c4f3' ...
+### [bt]: Applying algorithm 'run_learner' on problem '70bd5a65df34c4f3' for job 102 (seed = 103) ...
+INFO  [16:38:30.680] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_platt' on task 'kr-vs-kp' (iter 2/10)
+INFO  [16:38:30.718] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [16:38:30.723] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:31.643] [bbotk] Result of batch 1:
+INFO  [16:38:31.644] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:31.644] [bbotk]  0.4338714   0.121005        0      0            0.871
+INFO  [16:38:31.644] [bbotk]                                 uhash
+INFO  [16:38:31.644] [bbotk]  303b1ff1-df69-4a29-bd17-bf42cfc3b695
+INFO  [16:38:31.646] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:32.506] [bbotk] Result of batch 2:
+INFO  [16:38:32.507] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:32.507] [bbotk]  0.9217871  0.1213526        0      0            0.808
+INFO  [16:38:32.507] [bbotk]                                 uhash
+INFO  [16:38:32.507] [bbotk]  1fff83d3-761c-441c-9448-3309eda0c546
+INFO  [16:38:32.511] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:33.218] [bbotk] Result of batch 3:
+INFO  [16:38:33.219] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:33.219] [bbotk]  0.3759122  0.1206575        0      0            0.673
+INFO  [16:38:33.219] [bbotk]                                 uhash
+INFO  [16:38:33.219] [bbotk]  7072add3-8d5f-4758-a5ad-46217acf8ba2
+INFO  [16:38:33.234] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [16:38:33.235] [bbotk] Result:
+INFO  [16:38:33.236] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [16:38:33.236] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [16:38:33.236] [bbotk]  0.3759122          <list[1]> <list[1]>  0.1206575
+
+### [bt]: Job terminated successfully [batchtools job.id=102]
+### [bt]: Starting job [batchtools job.id=103]
+### [bt]: Generating problem instance for problem '70bd5a65df34c4f3' ...
+### [bt]: Applying algorithm 'run_learner' on problem '70bd5a65df34c4f3' for job 103 (seed = 104) ...
+INFO  [16:38:34.558] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_platt' on task 'kr-vs-kp' (iter 3/10)
+INFO  [16:38:34.603] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [16:38:34.619] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:35.574] [bbotk] Result of batch 1:
+INFO  [16:38:35.575] [bbotk]     laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:35.575] [bbotk]  0.03889275  0.1185636        0      0            0.899
+INFO  [16:38:35.575] [bbotk]                                 uhash
+INFO  [16:38:35.575] [bbotk]  555615df-94f0-4ad5-bb26-e25d8edc2eb6
+INFO  [16:38:35.577] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:36.654] [bbotk] Result of batch 2:
+INFO  [16:38:36.659] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:36.659] [bbotk]  0.1139628  0.1185636        0      0            1.018
+INFO  [16:38:36.659] [bbotk]                                 uhash
+INFO  [16:38:36.659] [bbotk]  c00e8b97-c2f6-43d9-b87f-c43823df342a
+INFO  [16:38:36.662] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:37.733] [bbotk] Result of batch 3:
+INFO  [16:38:37.734] [bbotk]     laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:37.734] [bbotk]  0.09547007  0.1185636        0      0             1.01
+INFO  [16:38:37.734] [bbotk]                                 uhash
+INFO  [16:38:37.734] [bbotk]  2afd9905-484a-4999-9222-b6f0ff3dc34e
+INFO  [16:38:37.760] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [16:38:37.761] [bbotk] Result:
+INFO  [16:38:37.762] [bbotk]     laplace learner_param_vals  x_domain classif.ce
+INFO  [16:38:37.762] [bbotk]       <num>             <list>    <list>      <num>
+INFO  [16:38:37.762] [bbotk]  0.03889275          <list[1]> <list[1]>  0.1185636
+
+### [bt]: Job terminated successfully [batchtools job.id=103]
+### [bt]: Starting job [batchtools job.id=104]
+### [bt]: Generating problem instance for problem '70bd5a65df34c4f3' ...
+### [bt]: Applying algorithm 'run_learner' on problem '70bd5a65df34c4f3' for job 104 (seed = 105) ...
+INFO  [16:38:39.668] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_platt' on task 'kr-vs-kp' (iter 4/10)
+INFO  [16:38:39.727] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [16:38:39.737] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:40.667] [bbotk] Result of batch 1:
+INFO  [16:38:40.669] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:40.669] [bbotk]  0.7138659  0.1345699        0      0            0.879
+INFO  [16:38:40.669] [bbotk]                                 uhash
+INFO  [16:38:40.669] [bbotk]  07924f06-07ab-41e8-835f-e8e6212fc6fc
+INFO  [16:38:40.677] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:41.637] [bbotk] Result of batch 2:
+INFO  [16:38:41.638] [bbotk]     laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:41.638] [bbotk]  0.03225722  0.1349175        0      0            0.904
+INFO  [16:38:41.638] [bbotk]                                 uhash
+INFO  [16:38:41.638] [bbotk]  9e8d2f91-2694-410a-862e-9e4b7a791282
+INFO  [16:38:41.640] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:42.587] [bbotk] Result of batch 3:
+INFO  [16:38:42.588] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:42.588] [bbotk]  0.3681545   0.134222        0      0            0.893
+INFO  [16:38:42.588] [bbotk]                                 uhash
+INFO  [16:38:42.588] [bbotk]  983de056-2d8f-49f3-951e-f7f578266f6c
+INFO  [16:38:42.594] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [16:38:42.594] [bbotk] Result:
+INFO  [16:38:42.594] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [16:38:42.594] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [16:38:42.594] [bbotk]  0.3681545          <list[1]> <list[1]>   0.134222
+
+### [bt]: Job terminated successfully [batchtools job.id=104]
+### [bt]: Starting job [batchtools job.id=105]
+### [bt]: Generating problem instance for problem '70bd5a65df34c4f3' ...
+### [bt]: Applying algorithm 'run_learner' on problem '70bd5a65df34c4f3' for job 105 (seed = 106) ...
+INFO  [16:38:44.384] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_platt' on task 'kr-vs-kp' (iter 5/10)
+INFO  [16:38:44.436] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [16:38:44.449] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:45.435] [bbotk] Result of batch 1:
+INFO  [16:38:45.437] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:45.437] [bbotk]  0.6264087  0.1265718        0      0            0.948
+INFO  [16:38:45.437] [bbotk]                                 uhash
+INFO  [16:38:45.437] [bbotk]  ca426679-18a5-4936-9279-09205b87f5fc
+INFO  [16:38:45.444] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:46.505] [bbotk] Result of batch 2:
+INFO  [16:38:46.505] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:46.505] [bbotk]  0.5811612  0.1262243        0      0            1.001
+INFO  [16:38:46.505] [bbotk]                                 uhash
+INFO  [16:38:46.505] [bbotk]  4b260cc5-1149-4cec-8820-4f1d0ab3f011
+INFO  [16:38:46.510] [bbotk] Evaluating 1 configuration(s)
+INFO  [16:38:47.532] [bbotk] Result of batch 3:
+INFO  [16:38:47.533] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [16:38:47.533] [bbotk]  0.3738085  0.1262243        0      0            0.965
+INFO  [16:38:47.533] [bbotk]                                 uhash
+INFO  [16:38:47.533] [bbotk]  1e6a6e6f-afce-4e03-b65b-740fcf2b1e9c
+INFO  [16:38:47.551] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [16:38:47.551] [bbotk] Result:
+INFO  [16:38:47.553] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [16:38:47.553] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [16:38:47.553] [bbotk]  0.5811612          <list[1]> <list[1]>  0.1262243
+
+### [bt]: Job terminated successfully [batchtools job.id=105]
+### [bt]: Calculation finished!

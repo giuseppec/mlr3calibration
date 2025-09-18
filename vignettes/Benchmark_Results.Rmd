@@ -1,0 +1,182 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Visualize Benchmark Results
+
+```{r}
+bmrdt_measured <- read.csv("bmrdt_measured.csv")
+```
+
+### Main results
+
+We are interested in how well all calibration methods and strategies
+improved the calibration of the base learners compared to the
+uncalibrated base learner:
+
+```{r}
+library(data.table)
+library(ggplot2)
+
+ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration_method)) +
+  geom_boxplot() +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Classification ECE",
+    fill = "Calibration Method",
+    title = "ECE per Base Learner and Calibration Method"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration_method)) +
+  geom_boxplot() +
+  facet_wrap(~ calibration_strategy, scales = "fixed") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Classification ECE",
+    fill = "Calibration Method",
+    title = "ECE per Base Learner and Calibration Method (by Calibration Strategy)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Naive Bayes is per se poorly calibrated, whereas Random Forest is
+already well calibrated before applying any of the calibration methods
+and strategies.
+
+There is no real difference visible between `oof` and `perfold`
+calibration: Both improve Naive Bayes Calibration in a similar manner,
+both do not quite reduce the variance of `ece` compared the uncalibrated
+base learner.
+
+When only looking at the calibration method (first plot) all methods
+seem to work equally well for Naive Bayes and Random Forest. For
+Decision Tree, `platt` slightly outperforms the other methods.
+
+### Deep Dive Calibration Strategy
+
+```{r}
+ggplot(bmrdt_measured, aes(x = base_learner, y = classif.ece, fill = calibration_strategy)) +
+  geom_boxplot() +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Classification ECE",
+    fill = "Calibration Strategy",
+    title = "ECE per Base Learner and Calibration Strategy"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Calibration only really helps for Naive Bayes. There is no difference
+visible between the strategies.
+
+### Deep Dive Differences between Benchmark Tasks
+
+```{r}
+library(data.table)
+ggplot(
+  subset(bmrdt_measured, calibration_strategy == "none"),
+  aes(x = task_id, y = classif.ece, color = base_learner)
+) +
+  geom_boxplot() +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Classification ECE",
+    fill = "Base Learner",
+    title = "ECE per Task (No Calibration Strategy)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+```{r}
+# Aggregate ECE per task_id and base_learner where calibration_strategy is none
+library(dplyr)
+
+plotdt <- bmrdt_measured %>%
+  filter(calibration_strategy == "none") %>%
+  group_by(task_id, base_learner) %>%
+  summarise(mean_ece = mean(classif.ece, na.rm = TRUE), .groups = "drop")
+
+
+# Scatter plot of averaged ECE
+ggplot(plotdt, aes(x = task_id, y = mean_ece, color = base_learner, group = base_learner)) +
+  geom_point(size = 3) +
+  geom_line() +  # optional: connect points per base_learner
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Mean Classification ECE",
+    color = "Base Learner",
+    title = "Average ECE per Task and Base Learner (No Calibration Strategy)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Naive Bayes is really calibrated worst for most, but also Decision Tree
+seems similar except for `pc3`
+
+```{r}
+# Aggregate mean ECE per task_id, base_learner, and calibration_strategy
+plotdt <- bmrdt_measured %>%
+  group_by(task_id, base_learner, calibration_strategy) %>%
+  summarise(mean_ece = mean(classif.ece, na.rm = TRUE), .groups = "drop")
+
+
+# Scatter plot with facets for each base learner
+ggplot(plotdt, aes(x = task_id, y = mean_ece, color = calibration_strategy, group = calibration_strategy)) +
+  geom_point(size = 3) +
+  geom_line() +
+  facet_wrap(~ base_learner, scales = "free_x") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Mean Classification ECE",
+    color = "Calibration Strategy",
+    title = "Average ECE per Task, by Calibration Strategy, per Base Learner"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+similarity over strategies
+
+```{r}
+# Aggregate mean ECE per task_id, base_learner, calibration_strategy, and calibration_method
+plotdt <- bmrdt_measured %>%
+  group_by(task_id, base_learner, calibration_strategy, calibration_method) %>%
+  summarise(mean_ece = mean(classif.ece, na.rm = TRUE), .groups = "drop")
+
+
+# Create a combined factor for coloring
+plotdt <- plotdt %>%
+  mutate(strategy_method = paste(calibration_strategy, calibration_method, sep = "_"))
+
+
+# Scatter plot with facets per base learner
+ggplot(plotdt, aes(x = task_id, y = mean_ece, color = strategy_method, group = strategy_method)) +
+  geom_point(size = 3) +
+  geom_line() +
+  facet_wrap(~ base_learner, scales = "free_x") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Task ID",
+    y = "Mean Classification ECE",
+    color = "Strategy_Method",
+    title = "Average ECE per Task by Calibration Strategy + Method per Base Learner"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```

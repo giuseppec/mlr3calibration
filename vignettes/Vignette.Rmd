@@ -986,6 +986,97 @@ make_calibrated_learners = function(learner) {
 all_learners = unlist(lapply(learners, make_calibrated_learners), recursive = FALSE)
 ```
 
+Advanced Learners including tuning:
+
+```{r}
+library(mlr3learners)
+library(mlr3)
+library(mlr3tuning)
+library(paradox)
+
+# ---- Base learners ----
+learners = list(
+  lrn("classif.naive_bayes", predict_type = "prob"),
+  lrn("classif.ranger", predict_type = "prob"),  # random forest
+  lrn("classif.xgboost", predict_type = "prob")   
+)
+
+# ---- Autotuners ----
+
+ps_nb = ps(
+  laplace = p_dbl(0, 1)
+)
+
+ps_rf = ps(
+  num.trees = p_int(100, 500)
+)
+
+ps_xgb = ps(
+  nrounds   = p_int(50, 300),
+  eta       = p_dbl(0.01, 0.3),
+  max_depth = p_int(2, 10)
+)
+
+tuner = tnr("random_search")
+resampling_inner = rsmp("cv", folds = 3)
+
+at_nb = AutoTuner$new(
+  learner = lrn("classif.naive_bayes", predict_type = "prob"),
+  resampling = resampling_inner,
+  measure = msr("classif.ce"),
+  search_space = ps_nb,
+  terminator = trm("evals", n_evals = 3),
+  tuner = tuner
+)
+
+at_rf = AutoTuner$new(
+  learner = lrn("classif.ranger", predict_type = "prob"),
+  resampling = resampling_inner,
+  measure = msr("classif.ce"),
+  search_space = ps_rf,
+  terminator = trm("evals", n_evals = 3),
+  tuner = tuner
+)
+
+at_xgb = AutoTuner$new(
+  learner = lrn("classif.xgboost", predict_type = "prob"),
+  resampling = resampling_inner,
+  measure = msr("classif.ce"),
+  search_space = ps_xgb,
+  terminator = trm("evals", n_evals = 10),
+  tuner = tuner
+)
+
+learners = list(at_nb, at_rf, at_xgb)
+
+# ---- Calibration methods ----
+calib_methods = c("platt", "beta", "isotonic")
+
+# ---- Calibration strategies ----
+calib_strategies = c("calib.oof", "calib.perfold", "calib.tunefirst.oof", "calib.tunefirst.perfold")
+
+# ---- Wrap learners with calibration ----
+make_calibrated_learners = function(learner) {
+  out = list()
+  
+  # uncalibrated version
+  out[[learner$id]] = learner$clone()
+  
+  # calibrated versions
+  for (strategy in calib_strategies) {
+    for (method in calib_methods) {
+      po = as_learner(calibPipeOp(strategy, learner = learner$clone(), method = method, resampling = rsmp("cv", folds = 5)))
+      id = paste(learner$id, strategy, method, sep = "_")
+      po$id = id
+      out[[id]] = po
+    }
+  }
+  out
+}
+
+all_learners = unlist(lapply(learners, make_calibrated_learners), recursive = FALSE)
+```
+
 ## Benchmark Grid
 
 ```{r}
@@ -997,16 +1088,11 @@ large_design[1:6] # first 6 rows
 ## Run the experiment
 
 ```{r}
-bmr = benchmark(large_design)
-bmr
-```
-
-```{r}
 library(batchtools)
 
 # create registry
 reg = makeExperimentRegistry(
-  file.dir = "./experiments",
+  file.dir = "./experiments_tuned",
   seed = 1,
   packages = "mlr3verse"
 )
@@ -1076,11 +1162,13 @@ For `pc1` task, `perfold` `beta` calibration on the Decision Tree does
 not numerically converge.
 
 ```{r}
-ids = findExperiments(algo.pars = learner_id != "classif.rpart_calib.perfold_beta",
-  reg = reg)
-bmr = reduceResultsBatchmark(ids, reg = reg)
+all_ids = findExperiments(reg = reg)
+ok_ids  = setdiff(all_ids$job.id, error_ids$job.id)
+
+bmr = reduceResultsBatchmark(ids = ok_ids, reg = reg)
 bmr$aggregate(ece$new())[1:5]
 ```
+
 
 ## Collect Benchmark Results
 
@@ -1117,14 +1205,20 @@ bmrdt_measured[, base_learner := fcase(
   grepl("naive_bayes", learner_id), "naive_bayes",
   grepl("ranger", learner_id), "ranger",
   grepl("rpart", learner_id), "rpart",
+  grepl("xgboost", learner_id), "xgboost",
   default = "NO"
+)]
+
+bmrdt_measured[, tunefirst := fcase(
+  grepl("tunefirst", learner_id), TRUE,
+  default = FALSE
 )]
 ```
 
 ```{r}
 write.csv(
-  bmrdt_measured[, .(task_id, learner_id, classif.ece, calibration_strategy, calibration_method, base_learner)],
-  "bmrdt_measured.csv",
+  bmrdt_measured[, .(task_id, learner_id, classif.ece, calibration_strategy, calibration_method, base_learner, tunefirst)],
+  "bmrdt_measured_tuned.csv",
   row.names = FALSE
 )
 ```
@@ -1184,6 +1278,28 @@ base learner.
 When only looking at the calibration method (first plot) all methods
 seem to work equally well for Naive Bayes and Random Forest. For
 Decision Tree, `platt` slightly outperforms the other methods.
+
+We can plot the results for the advanced (i.e. including tuning) benchmark similarly: 
+
+```{r}
+library(ggplot2)
+ggplot(
+  bmrdt_measured,
+  aes(x = base_learner, y = classif.ece, fill = calibration_method)
+) +
+  geom_boxplot() +
+  facet_grid(calibration_strategy ~ tunefirst, scales = "fixed") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Classification ECE",
+    fill = "Calibration Method",
+    title = "ECE per Base Learner and Calibration Method (by Strategy and TuneFirst)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
 
 ### Deep Dive Calibration Strategy
 

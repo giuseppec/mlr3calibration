@@ -1,0 +1,155 @@
+### [bt]: This is batchtools v0.9.17
+### [bt]: Starting calculation of 5 jobs
+### [bt]: Setting working directory to '/Users/User/Documents/Studium/Semester8/Hiwi/mlr3calibration/vignettes'
+### [bt]: Memory measurement disabled
+### [bt]: Starting job [batchtools job.id=2936]
+### [bt]: Generating problem instance for problem '6390d9e81da17366' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6390d9e81da17366' for job 2936 (seed = 2937) ...
+INFO  [17:24:55.969] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.oof_platt' on task 'qsar-biodeg' (iter 6/10)
+INFO  [17:24:56.027] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:24:56.043] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:24:56.444] [bbotk] Result of batch 1:
+INFO  [17:24:56.446] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:24:56.446] [bbotk]        316  0.1294906        0      0            0.364
+INFO  [17:24:56.446] [bbotk]                                 uhash
+INFO  [17:24:56.446] [bbotk]  13a2a6c8-004e-4728-85df-80f8e38ef66b
+INFO  [17:24:56.450] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:24:56.952] [bbotk] Result of batch 2:
+INFO  [17:24:56.953] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:24:56.953] [bbotk]        450  0.1263327        0      0            0.439
+INFO  [17:24:56.953] [bbotk]                                 uhash
+INFO  [17:24:56.953] [bbotk]  ba194367-6364-401f-9733-c6a11bdf4077
+INFO  [17:24:56.966] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:24:57.492] [bbotk] Result of batch 3:
+INFO  [17:24:57.493] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:24:57.493] [bbotk]        438  0.1221233        0      0             0.49
+INFO  [17:24:57.493] [bbotk]                                 uhash
+INFO  [17:24:57.493] [bbotk]  b05f69b1-e1b5-4318-a27c-ac108a6a8f94
+INFO  [17:24:57.499] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:24:57.499] [bbotk] Result:
+INFO  [17:24:57.500] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:24:57.500] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:24:57.500] [bbotk]        438          <list[2]> <list[1]>  0.1221233
+
+### [bt]: Job terminated successfully [batchtools job.id=2936]
+### [bt]: Starting job [batchtools job.id=2937]
+### [bt]: Generating problem instance for problem '6390d9e81da17366' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6390d9e81da17366' for job 2937 (seed = 2938) ...
+INFO  [17:24:59.364] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.oof_platt' on task 'qsar-biodeg' (iter 7/10)
+INFO  [17:24:59.477] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:24:59.501] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:24:59.806] [bbotk] Result of batch 1:
+INFO  [17:24:59.809] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:24:59.809] [bbotk]        171  0.1378995        0      0            0.196
+INFO  [17:24:59.809] [bbotk]                                 uhash
+INFO  [17:24:59.809] [bbotk]  eae13ff0-92da-4cf3-920e-17be1f6432ad
+INFO  [17:24:59.811] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:00.261] [bbotk] Result of batch 2:
+INFO  [17:25:00.263] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:00.263] [bbotk]        384  0.1400092        0      0            0.413
+INFO  [17:25:00.263] [bbotk]                                 uhash
+INFO  [17:25:00.263] [bbotk]  37e9b382-230b-45ab-9466-ae456990de55
+INFO  [17:25:00.268] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:00.446] [bbotk] Result of batch 3:
+INFO  [17:25:00.449] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:00.449] [bbotk]        121  0.1421023        0      0            0.139
+INFO  [17:25:00.449] [bbotk]                                 uhash
+INFO  [17:25:00.449] [bbotk]  b08258fe-b967-4a7e-bd7b-9fc86e6a3bda
+INFO  [17:25:00.462] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:25:00.463] [bbotk] Result:
+INFO  [17:25:00.463] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:25:00.463] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:25:00.463] [bbotk]        171          <list[2]> <list[1]>  0.1378995
+
+### [bt]: Job terminated successfully [batchtools job.id=2937]
+### [bt]: Starting job [batchtools job.id=2938]
+### [bt]: Generating problem instance for problem '6390d9e81da17366' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6390d9e81da17366' for job 2938 (seed = 2939) ...
+INFO  [17:25:01.183] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.oof_platt' on task 'qsar-biodeg' (iter 8/10)
+INFO  [17:25:01.244] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:25:01.249] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:01.482] [bbotk] Result of batch 1:
+INFO  [17:25:01.482] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:01.482] [bbotk]        135  0.1305421        0      0            0.161
+INFO  [17:25:01.482] [bbotk]                                 uhash
+INFO  [17:25:01.482] [bbotk]  620ca180-ba79-4ae7-863d-c803e82fa89e
+INFO  [17:25:01.486] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:01.972] [bbotk] Result of batch 2:
+INFO  [17:25:01.974] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:01.974] [bbotk]        284  0.1305488        0      0            0.422
+INFO  [17:25:01.974] [bbotk]                                 uhash
+INFO  [17:25:01.974] [bbotk]  0427ad53-4563-4e96-9ad7-690bc2c8d839
+INFO  [17:25:01.977] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:02.364] [bbotk] Result of batch 3:
+INFO  [17:25:02.365] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:02.365] [bbotk]        276  0.1294906        0      0            0.339
+INFO  [17:25:02.365] [bbotk]                                 uhash
+INFO  [17:25:02.365] [bbotk]  fa3c0cb0-9ba2-4e41-911c-3799169f46a9
+INFO  [17:25:02.372] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:25:02.372] [bbotk] Result:
+INFO  [17:25:02.373] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:25:02.373] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:25:02.373] [bbotk]        276          <list[2]> <list[1]>  0.1294906
+
+### [bt]: Job terminated successfully [batchtools job.id=2938]
+### [bt]: Starting job [batchtools job.id=2939]
+### [bt]: Generating problem instance for problem '6390d9e81da17366' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6390d9e81da17366' for job 2939 (seed = 2940) ...
+INFO  [17:25:03.570] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.oof_platt' on task 'qsar-biodeg' (iter 9/10)
+INFO  [17:25:03.626] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:25:03.632] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:03.995] [bbotk] Result of batch 1:
+INFO  [17:25:03.996] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:03.996] [bbotk]        299  0.1420723        0      0            0.275
+INFO  [17:25:03.996] [bbotk]                                 uhash
+INFO  [17:25:03.996] [bbotk]  ff103ecb-59a2-480b-bdd9-ebee8b54c9d8
+INFO  [17:25:03.999] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:04.310] [bbotk] Result of batch 2:
+INFO  [17:25:04.311] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:04.311] [bbotk]        266  0.1378662        0      0            0.269
+INFO  [17:25:04.311] [bbotk]                                 uhash
+INFO  [17:25:04.311] [bbotk]  02073db0-3bf1-4555-a769-ebbdec7ef3af
+INFO  [17:25:04.314] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:04.705] [bbotk] Result of batch 3:
+INFO  [17:25:04.707] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:04.707] [bbotk]        370  0.1431272        0      0            0.356
+INFO  [17:25:04.707] [bbotk]                                 uhash
+INFO  [17:25:04.707] [bbotk]  0099f1f2-a083-4941-914a-2dfff1194cbf
+INFO  [17:25:04.715] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:25:04.717] [bbotk] Result:
+INFO  [17:25:04.718] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:25:04.718] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:25:04.718] [bbotk]        266          <list[2]> <list[1]>  0.1378662
+
+### [bt]: Job terminated successfully [batchtools job.id=2939]
+### [bt]: Starting job [batchtools job.id=2940]
+### [bt]: Generating problem instance for problem '6390d9e81da17366' ...
+### [bt]: Applying algorithm 'run_learner' on problem '6390d9e81da17366' for job 2940 (seed = 2941) ...
+INFO  [17:25:06.107] [mlr3] Applying learner 'classif.ranger.tuned_calib.tunefirst.oof_platt' on task 'qsar-biodeg' (iter 10/10)
+INFO  [17:25:06.182] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:25:06.203] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:06.622] [bbotk] Result of batch 1:
+INFO  [17:25:06.623] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:06.623] [bbotk]        304  0.1442186        0      0            0.346
+INFO  [17:25:06.623] [bbotk]                                 uhash
+INFO  [17:25:06.623] [bbotk]  c6706de4-8cee-4d5f-bf24-8642da4efde5
+INFO  [17:25:06.626] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:07.056] [bbotk] Result of batch 2:
+INFO  [17:25:07.057] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:07.057] [bbotk]        401  0.1452635        0      0            0.392
+INFO  [17:25:07.057] [bbotk]                                 uhash
+INFO  [17:25:07.057] [bbotk]  dc0dd1a2-898a-45ac-8fe0-eb29432cfcb9
+INFO  [17:25:07.062] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:25:07.404] [bbotk] Result of batch 3:
+INFO  [17:25:07.405] [bbotk]  num.trees classif.ce warnings errors runtime_learners
+INFO  [17:25:07.405] [bbotk]        258  0.1400059        0      0             0.28
+INFO  [17:25:07.405] [bbotk]                                 uhash
+INFO  [17:25:07.405] [bbotk]  838a5d31-90d0-4243-95b7-5c46f04a0e1f
+INFO  [17:25:07.424] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:25:07.424] [bbotk] Result:
+INFO  [17:25:07.425] [bbotk]  num.trees learner_param_vals  x_domain classif.ce
+INFO  [17:25:07.425] [bbotk]      <int>             <list>    <list>      <num>
+INFO  [17:25:07.425] [bbotk]        258          <list[2]> <list[1]>  0.1400059
+
+### [bt]: Job terminated successfully [batchtools job.id=2940]
+### [bt]: Calculation finished!

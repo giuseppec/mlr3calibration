@@ -1,0 +1,241 @@
+### [bt]: This is batchtools v0.9.17
+### [bt]: Starting calculation of 5 jobs
+### [bt]: Setting working directory to '/Users/User/Documents/Studium/Semester8/Hiwi/mlr3calibration/vignettes'
+### [bt]: Memory measurement disabled
+### [bt]: Starting job [batchtools job.id=1676]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1676 (seed = 1677) ...
+INFO  [17:00:08.654] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_beta' on task 'kc1' (iter 6/10)
+INFO  [17:00:08.713] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:00:08.724] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:09.113] [bbotk] Result of batch 1:
+INFO  [17:00:09.114] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:09.114] [bbotk]  0.1232914  0.1770227        0      0            0.344
+INFO  [17:00:09.114] [bbotk]                                 uhash
+INFO  [17:00:09.114] [bbotk]  d4ad2656-98c6-4ae0-91bb-5763832ccd9e
+INFO  [17:00:09.119] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:09.559] [bbotk] Result of batch 2:
+INFO  [17:00:09.560] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:09.560] [bbotk]  0.3970004  0.1770227        0      0            0.381
+INFO  [17:00:09.560] [bbotk]                                 uhash
+INFO  [17:00:09.560] [bbotk]  011b7b4e-f708-4cb0-8df3-fa985a09f0e2
+INFO  [17:00:09.562] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:09.987] [bbotk] Result of batch 3:
+INFO  [17:00:09.988] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:09.988] [bbotk]  0.6300479  0.1770227        0      0            0.379
+INFO  [17:00:09.988] [bbotk]                                 uhash
+INFO  [17:00:09.988] [bbotk]  49b99867-654d-410a-a7e9-358c22e9943d
+INFO  [17:00:09.995] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:00:09.995] [bbotk] Result:
+INFO  [17:00:09.996] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [17:00:09.996] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [17:00:09.996] [bbotk]  0.1232914          <list[1]> <list[1]>  0.1770227
+[1] -0.4090545
+[1] 3.553427
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -0.9667793
+[1] 4.395943
+[1] -1.023037
+[1] 4.820816
+[1] -1.259916
+[1] 2.089303
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -0.4015933
+[1] 3.913726
+
+### [bt]: Job terminated successfully [batchtools job.id=1676]
+### [bt]: Starting job [batchtools job.id=1677]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1677 (seed = 1678) ...
+INFO  [17:00:10.770] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_beta' on task 'kc1' (iter 7/10)
+INFO  [17:00:10.830] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:00:10.835] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:11.292] [bbotk] Result of batch 1:
+INFO  [17:00:11.293] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:11.293] [bbotk]  0.3597418  0.1743973        0      0            0.407
+INFO  [17:00:11.293] [bbotk]                                 uhash
+INFO  [17:00:11.293] [bbotk]  21932132-88f0-4191-a51b-5bfe7bf1f847
+INFO  [17:00:11.295] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:11.747] [bbotk] Result of batch 2:
+INFO  [17:00:11.748] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:11.748] [bbotk]  0.8019752  0.1743973        0      0            0.404
+INFO  [17:00:11.748] [bbotk]                                 uhash
+INFO  [17:00:11.748] [bbotk]  59130ce1-4639-4a40-bc3a-862d5d67161e
+INFO  [17:00:11.757] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:12.189] [bbotk] Result of batch 3:
+INFO  [17:00:12.190] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:12.190] [bbotk]  0.8016771  0.1743973        0      0            0.391
+INFO  [17:00:12.190] [bbotk]                                 uhash
+INFO  [17:00:12.190] [bbotk]  0cd3eb60-4872-41e6-ad93-924388b4d7e0
+INFO  [17:00:12.201] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:00:12.201] [bbotk] Result:
+INFO  [17:00:12.202] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [17:00:12.202] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [17:00:12.202] [bbotk]  0.3597418          <list[1]> <list[1]>  0.1743973
+[1] -1.850298
+[1] 2.206347
+[1] -1.113749
+[1] 2.882918
+[1] -0.08036347
+[1] 4.472751
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -0.4962759
+[1] 5.669023
+[1] -0.2166065
+[1] 3.467509
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+
+### [bt]: Job terminated successfully [batchtools job.id=1677]
+### [bt]: Starting job [batchtools job.id=1678]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1678 (seed = 1679) ...
+INFO  [17:00:13.006] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_beta' on task 'kc1' (iter 8/10)
+INFO  [17:00:13.057] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:00:13.063] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:13.478] [bbotk] Result of batch 1:
+INFO  [17:00:13.479] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:13.479] [bbotk]  0.4174713  0.1759745        0      0            0.379
+INFO  [17:00:13.479] [bbotk]                                 uhash
+INFO  [17:00:13.479] [bbotk]  549e10fb-f0df-4e42-9bff-21246a1d9e60
+INFO  [17:00:13.483] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:13.941] [bbotk] Result of batch 2:
+INFO  [17:00:13.942] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:13.942] [bbotk]  0.4298447  0.1759745        0      0             0.41
+INFO  [17:00:13.942] [bbotk]                                 uhash
+INFO  [17:00:13.942] [bbotk]  339f3d74-0528-4ae2-bf2a-d5139052b025
+INFO  [17:00:13.944] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:14.398] [bbotk] Result of batch 3:
+INFO  [17:00:14.399] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:14.399] [bbotk]  0.7865782  0.1759745        0      0            0.383
+INFO  [17:00:14.399] [bbotk]                                 uhash
+INFO  [17:00:14.399] [bbotk]  a14bc1f4-61dc-4c79-bed5-41bd508d126a
+INFO  [17:00:14.410] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:00:14.411] [bbotk] Result:
+INFO  [17:00:14.412] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [17:00:14.412] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [17:00:14.412] [bbotk]  0.4174713          <list[1]> <list[1]>  0.1759745
+[1] -1.379772
+[1] 2.812358
+[1] -1.590953
+[1] 2.119319
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -0.5053751
+[1] 4.80159
+[1] -0.4650256
+[1] 3.279226
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] 0.2294582
+[1] 5.288277
+
+### [bt]: Job terminated successfully [batchtools job.id=1678]
+### [bt]: Starting job [batchtools job.id=1679]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1679 (seed = 1680) ...
+INFO  [17:00:15.297] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_beta' on task 'kc1' (iter 9/10)
+INFO  [17:00:15.347] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:00:15.355] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:15.784] [bbotk] Result of batch 1:
+INFO  [17:00:15.785] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:15.785] [bbotk]  0.1415438  0.1764936        0      0            0.383
+INFO  [17:00:15.785] [bbotk]                                 uhash
+INFO  [17:00:15.785] [bbotk]  2f60bda3-5e1c-4c30-ac73-b7ceda8ae06d
+INFO  [17:00:15.796] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:16.239] [bbotk] Result of batch 2:
+INFO  [17:00:16.241] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:16.241] [bbotk]  0.6522324  0.1764936        0      0            0.388
+INFO  [17:00:16.241] [bbotk]                                 uhash
+INFO  [17:00:16.241] [bbotk]  6baf879b-840f-4558-b5c3-fbc9d983f59e
+INFO  [17:00:16.252] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:16.772] [bbotk] Result of batch 3:
+INFO  [17:00:16.781] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:16.781] [bbotk]  0.5432307  0.1764936        0      0            0.432
+INFO  [17:00:16.781] [bbotk]                                 uhash
+INFO  [17:00:16.781] [bbotk]  b9bac892-ec43-4548-bd2f-364284d23e75
+INFO  [17:00:16.800] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:00:16.801] [bbotk] Result:
+INFO  [17:00:16.805] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [17:00:16.805] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [17:00:16.805] [bbotk]  0.1415438          <list[1]> <list[1]>  0.1764936
+[1] -0.2125217
+[1] 4.443993
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -0.3520993
+[1] 5.288615
+[1] -1.444335
+[1] 3.030731
+[1] -1.572582
+[1] 2.282224
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -0.125914
+[1] 3.909212
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+
+### [bt]: Job terminated successfully [batchtools job.id=1679]
+### [bt]: Starting job [batchtools job.id=1680]
+### [bt]: Generating problem instance for problem '42e9f2146ba77696' ...
+### [bt]: Applying algorithm 'run_learner' on problem '42e9f2146ba77696' for job 1680 (seed = 1681) ...
+INFO  [17:00:17.606] [mlr3] Applying learner 'classif.naive_bayes.tuned_calib.tunefirst.perfold_beta' on task 'kc1' (iter 10/10)
+INFO  [17:00:17.674] [bbotk] Starting to optimize 1 parameter(s) with '<OptimizerBatchRandomSearch>' and '<TerminatorEvals> [n_evals=3, k=0]'
+INFO  [17:00:17.691] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:18.084] [bbotk] Result of batch 1:
+INFO  [17:00:18.085] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:18.085] [bbotk]  0.9405277  0.1753555        0      0             0.35
+INFO  [17:00:18.085] [bbotk]                                 uhash
+INFO  [17:00:18.085] [bbotk]  915f16ef-05f5-4701-9775-e82a83bd02af
+INFO  [17:00:18.088] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:18.562] [bbotk] Result of batch 2:
+INFO  [17:00:18.563] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:18.563] [bbotk]  0.6228723  0.1753555        0      0            0.403
+INFO  [17:00:18.563] [bbotk]                                 uhash
+INFO  [17:00:18.563] [bbotk]  2cd52959-dddf-4d08-af91-1ab66dbecb61
+INFO  [17:00:18.565] [bbotk] Evaluating 1 configuration(s)
+INFO  [17:00:18.993] [bbotk] Result of batch 3:
+INFO  [17:00:18.994] [bbotk]    laplace classif.ce warnings errors runtime_learners
+INFO  [17:00:18.994] [bbotk]  0.5615605  0.1753555        0      0            0.386
+INFO  [17:00:18.994] [bbotk]                                 uhash
+INFO  [17:00:18.994] [bbotk]  f813a795-6a01-45cb-9fd7-572aae083b18
+INFO  [17:00:19.002] [bbotk] Finished optimizing after 3 evaluation(s)
+INFO  [17:00:19.002] [bbotk] Result:
+INFO  [17:00:19.003] [bbotk]    laplace learner_param_vals  x_domain classif.ce
+INFO  [17:00:19.003] [bbotk]      <num>             <list>    <list>      <num>
+INFO  [17:00:19.003] [bbotk]  0.9405277          <list[1]> <list[1]>  0.1753555
+[1] -0.2141711
+[1] 3.71671
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -0.2269879
+[1] 4.467215
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] 0.004584223
+[1] 4.609983
+[1] -0.05027504
+[1] 5.102776
+Warning in value[[3L]](cond) :
+  beta_calibration failed: uniroot endpoint sign mismatch.
+This happened PipeOp classif.naive_bayes's $train()
+[1] -2.372285
+[1] 1.894978
+
+### [bt]: Job terminated successfully [batchtools job.id=1680]
+### [bt]: Calculation finished!

@@ -1,0 +1,359 @@
+---
+title: "Benchmark_Results_Tuned.Rmd"
+author: "Elisabeth Meijer"
+date: "2025-09-22"
+output: html_document
+---
+
+# Load the Results
+
+```{r}
+library(batchtools)
+reg = loadRegistry("experiments_tuned", writeable = FALSE)
+```
+```{r}
+ids = findExperiments(reg = reg)
+# Or exclude failed jobs:
+error_ids = findErrors(reg = reg)
+ok_ids = setdiff(ids$job.id, error_ids$job.id)
+
+bmr = mlr3batchmark::reduceResultsBatchmark(ids = ok_ids, reg = reg)
+```
+
+```{r}
+library(mlr3)
+bmrdt = as.data.table(bmr)
+bmrdt_measured = as.data.table(bmr$score(measures = list(msr("classif.bbrier"), ece$new(), msr("classif.acc"))))
+```
+
+```{r}
+library(data.table)
+
+bmrdt_measured[, calibration_strategy := fcase(
+  grepl("oof", learner_id), "oof",
+  grepl("perfold", learner_id), "perfold",
+  default = "none"
+)]
+
+bmrdt_measured[, calibration_method := fcase(
+  grepl("platt", learner_id), "platt",
+  grepl("beta", learner_id), "beta",
+  grepl("isotonic", learner_id), "isotonic",
+  default = "none"
+)]
+
+bmrdt_measured[, base_learner := fcase(
+  grepl("naive_bayes", learner_id), "naive_bayes",
+  grepl("ranger", learner_id), "ranger",
+  grepl("rpart", learner_id), "rpart",
+  grepl("xgboost", learner_id), "xgboost",
+  default = "NO"
+)]
+
+bmrdt_measured[, tunefirst := fcase(
+  grepl("tunefirst", learner_id), TRUE,
+  default = FALSE
+)]
+```
+
+# Interprete the Results
+
+## Goal
+
+Benchmark mlr3 Calibration Strategies (`oof`, `perfold`) and methods (`platt`, `beta`, `isotonic`) with and without tuning first.
+
+## Experiment Setup
+
+The benchmark grid consists of the three learners Naive Bayes, Random Forest and XGboost. Naive Bayes is know to be very badly calibrated, so on this learner, we can see how well calibration works. XGboost usually requires tuning, so on this learner, we can see how much the integrated tuning improves results. Random Forest is used as a baseline to compare the others to.
+
+We use 10 oml benchmark suit datasets with binary classification tasks, each consisting of up tto 50 features and 1000 to 10000 samples.
+
+We train each of the learners without calibration and tuning, and with each combination of tuning strategy (`oof`, `perfold`) and method (`platt`, `beta`, `isotonic`), each with and without tuning first.
+
+## Results
+
+### Overview
+
+```{r}
+library(ggplot2)
+ggplot(
+  bmrdt_measured,
+  aes(x = base_learner, y = classif.bbrier, fill = calibration_method)
+) +
+  geom_boxplot() +
+  facet_grid(calibration_strategy ~ tunefirst, scales = "fixed") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Brier Score",
+    fill = "Calibration Method",
+    title = "Brier Score per Base Learner and Calibration Method (by Strategy and TuneFirst)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+- only for Naive Bayes, calibration improves brier score and differences between methods are visible
+
+- no differences between tunefirst and not tunefirst visible
+
+### Brier Score and Tuning
+
+Test if there is a difference between tunefirst and not tunefirst calibration
+
+```{r}
+# prepare paired data
+
+library(dplyr)
+library(tidyr)
+
+paired_dt <- bmrdt_measured %>%
+  filter(calibration_strategy != "none") %>%
+  group_by(task_id, base_learner, calibration_strategy, calibration_method, tunefirst) %>%
+  summarise(bbrier = mean(classif.bbrier, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(
+    names_from = tunefirst,
+    values_from = bbrier,
+    names_prefix = "tunefirst_"
+  )
+
+
+paired_dt <- paired_dt %>%
+  mutate(
+    tunefirst_TRUE  = as.numeric(tunefirst_TRUE),
+    tunefirst_FALSE = as.numeric(tunefirst_FALSE)
+  )
+
+
+```
+
+Wilcoxon signed rank test (nonparamteric)
+
+```{r}
+wilcox.test(paired_dt$tunefirst_TRUE, paired_dt$tunefirst_FALSE, paired = TRUE)
+```
+```{r}
+wilcox.test(
+    paired_dt$tunefirst_TRUE,
+  paired_dt$tunefirst_FALSE,
+  paired = TRUE,
+  alternative = "greater"   # TRUE > FALSE
+)
+
+```
+```{r}
+paired_dt <- paired_dt %>%
+  mutate(diff = tunefirst_FALSE - tunefirst_TRUE)  # positive = TRUE is lower
+
+ggplot(paired_dt, aes(x = base_learner, y = diff, fill = base_learner)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Difference (FALSE - TRUE)",
+    title = "Brier Score Differences per Base Learner (Positive = TRUE is better)"
+  )
+
+
+```
+
+Test shows differences. Tuned learners have higher brier score than not-tuned learners. Comparing accuracies (only classification, no calibration), we see that tuned accuracies are a little lower than unted for Xgboost, so it classfies a little worse. Might be due to our bad tuning grid.
+
+```{r}
+library(dplyr)
+library(tidyr)
+
+paired_dt <- bmrdt_measured %>%
+  filter(calibration_strategy != "none") %>%
+  group_by(task_id, base_learner, calibration_strategy, calibration_method, tunefirst) %>%
+  summarise(acc = mean(classif.acc, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(
+    names_from = tunefirst,
+    values_from = acc,
+    names_prefix = "tunefirst_"
+  )
+```
+
+```{r}
+paired_dt <- paired_dt %>%
+  mutate(diff = tunefirst_FALSE - tunefirst_TRUE)  # positive = TRUE is lower
+
+ggplot(paired_dt, aes(x = base_learner, y = diff, fill = base_learner)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Difference (FALSE - TRUE)",
+    title = "Accuracy Differences per Base Learner (Positive = TRUE is better)"
+  )
+
+
+```
+
+Looking at calibration quality only, alos the ECE decreases a little for the tuned version. 
+
+```{r}
+library(dplyr)
+library(tidyr)
+
+paired_dt <- bmrdt_measured %>%
+  filter(calibration_strategy != "none") %>%
+  group_by(task_id, base_learner, calibration_strategy, calibration_method, tunefirst) %>%
+  summarise(ece = mean(classif.ece, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(
+    names_from = tunefirst,
+    values_from = ece,
+    names_prefix = "tunefirst_"
+  )
+```
+
+```{r}
+paired_dt <- paired_dt %>%
+  mutate(diff = tunefirst_FALSE - tunefirst_TRUE)  # positive = TRUE is lower
+
+ggplot(paired_dt, aes(x = base_learner, y = diff, fill = base_learner)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Base Learner",
+    y = "Difference (FALSE - TRUE)",
+    title = "ECE Differences per Base Learner (Positive = TRUE is better)"
+  )
+
+
+```
+
+### Brier Score and Calibration Strategy
+
+Test if there is a difference between `oof` and `perfold` calibration
+
+```{r}
+# prepare paired data
+
+library(dplyr)
+library(tidyr)
+
+paired_dt <- bmrdt_measured %>%
+  filter(calibration_strategy != "none") %>%
+  group_by(task_id, base_learner, calibration_strategy, calibration_method, tunefirst) %>%
+  summarise(bbrier = mean(classif.bbrier, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(
+    names_from = calibration_strategy,
+    values_from = bbrier,
+    names_prefix = "calib_strategy_"
+  )
+
+paired_dt <- paired_dt %>%
+  mutate(
+    calib_strategy_oof  = as.numeric(calib_strategy_oof),
+    calib_strategy_perfold = as.numeric(calib_strategy_perfold)
+  )
+```
+
+Wilcoxon signed rank test (nonparamteric)
+
+```{r}
+wilcox.test(paired_dt$calib_strategy_perfold, paired_dt$calib_strategy_oof, paired = TRUE)
+```
+
+```{r}
+wilcox.test(
+    paired_dt$calib_strategy_oof,
+  paired_dt$calib_strategy_perfold,
+  paired = TRUE,
+  alternative = "greater"   # oof > perfold
+)
+
+```
+The test shows that `oof` has bigger brier scores than perfold, so `perfold` calibration seems to work better.
+
+```{r}
+strategy_dt <- bmrdt_measured %>%
+  filter(calibration_strategy != "none") %>%
+  group_by(base_learner, calibration_strategy, calibration_method, tunefirst) %>%
+  summarise(bbrier = mean(classif.bbrier, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(
+    names_from = calibration_strategy,
+    values_from = bbrier,
+    names_prefix = "calib_strategy_"
+  )
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+plot_dt <- strategy_dt %>%
+  select(base_learner, calibration_method, tunefirst,
+         calib_strategy_perfold, calib_strategy_oof) %>%
+  pivot_longer(
+    cols = starts_with("calib_strategy"),
+    names_to = "strategy",
+    values_to = "bbrier"
+  ) %>%
+  mutate(
+    combo_label = paste(base_learner, calibration_method, tunefirst, sep = "_")
+  )
+
+# Order factor by calib_strategy_perfold
+perfold_order <- plot_dt %>%
+  filter(strategy == "calib_strategy_perfold") %>%
+  arrange(bbrier) %>%
+  pull(combo_label)
+
+plot_dt <- plot_dt %>%
+  mutate(combo_label = factor(combo_label, levels = perfold_order))
+
+
+ggplot(plot_dt, aes(x = combo_label, y = bbrier, fill = strategy)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Learner + Method + TuneFirst",
+    y = "Mean Brier Score",
+    fill = "Calibration Strategy",
+    title = "Comparison of Per-Fold vs OOF Calibration Brier Scores"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+```
+However, both `perfold` and `oof` depend on learners and methods in a similar way.
+
+### Brier Score and Calibration Method
+
+Anova indicates that the brier score does not differ across the three methods.
+
+```{r}
+anova_res <- aov(classif.bbrier ~ calibration_method, data = bmrdt_measured%>%
+  filter(calibration_strategy != "none"))
+summary(anova_res)
+```
+
+```{r}
+library(dplyr)
+
+bmrdt_measured %>%
+  group_by(calibration_method) %>%
+  summarise(mean_bbrier = mean(classif.bbrier, na.rm = TRUE)) %>%
+  arrange(mean_bbrier)
+```
+
+
+
+## Summary
+
+Comparing tuned and untuned calibration, we find that tuned calibration performes worse with respect to  Brier Score and Accuracy, but leads to a better ECE. Tuning might not impove classification, as out search gird is very small. However, it seems to improve calibration.
+
+Looking at calibration strategy and method, we find that `perfold` tends to lead to lower brier scores than `oof`. However, both strategies depend on base learner and calibration method in a similar way.
+
+Comparing the calibration methods, we find that all three `platt`, `isotonic` and `beta` do not lead to statistically significantly different brier scores. They all improve calibration compared to not applying a calibration method at all.
+
+
+
+
+
+

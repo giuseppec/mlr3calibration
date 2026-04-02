@@ -48,9 +48,8 @@ learner_uncal <- lrn("classif.xgboost", nrounds = 50, predict_type = "prob")
 
 # Initialize the calibrated learner
 rsmp <- rsmp("cv", folds = 5)
-learner_cal <- as_learner(PipeOpCalibration$new(learner = learner_uncal,
-                                                method = "beta",
-                                                rsmp = rsmp))
+learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal,
+ method = "beta", rsmp = rsmp))
 
 # Set ID's for the learners
 learner_uncal$id <- "Uncalibrated Learner"

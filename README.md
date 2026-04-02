@@ -16,11 +16,10 @@ calibration index.
 
 ## Installation
 
-You can install the mlr3calibration package from GitHub with the following 
-code:
+You can install the mlr3calibration package from GitHub with the following code:
 
 ```
-remotes::install_github("AdriGl117/mlr3calibration")
+remotes::install_github("giuseppec/mlr3calibration")
 
 ```
 
@@ -48,7 +47,7 @@ learner_uncal <- lrn("classif.xgboost", nrounds = 50, predict_type = "prob")
 
 # Initialize the calibrated learner
 rsmp <- rsmp("cv", folds = 5)
-learner_cal <- as_learner(PipeOpCalibration$new(learner = learner_uncal, 
+learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal, 
                                               method = "beta",
                                               rsmp = rsmp))
 
@@ -104,7 +103,7 @@ calibrationplot(lrns, task_test, smooth = TRUE)
 
 ## Calibration with resample Object
 
-If you want to compare the three calibration approaches with each other, it can be time-consuming to train each calibration approach using cross validation. In these cases, you can train an rr object, store the models and pass it to the PipeOpCalibration. This means that the base learner has to be trained once in advance, and only the calibrators have to be trained in the PipeOpCalibration using the holdout folds.
+If you want to compare the three calibration approaches with each other, it can be time-consuming to train each calibration approach using cross validation. In these cases, you can train an rr object, store the models and pass it to the PipeOpCalibrationPerFold. This means that the base learner has to be trained once in advance, and only the calibrators have to be trained in the PipeOpCalibrationPerFold using the holdout folds.
 
 ```
 # Initialize base learner
@@ -117,15 +116,15 @@ rsmp <- rsmp("cv", folds = 5)
 rr <- resample(task_train, learner, rsmp, store_models = TRUE)
 
 # Initialze the calibrated learners
-learner_calibrated_platt <- as_learner(PipeOpCalibration$new(rr = rr, 
+learner_calibrated_platt <- as_learner(PipeOpCalibrationPerFold$new(rr = rr, 
                                          method = "platt"))
 learner_calibrated_platt$id = "Calibrated Platt"
 
-learner_calibrated_beta <- as_learner(PipeOpCalibration$new(rr = rr, 
+learner_calibrated_beta <- as_learner(PipeOpCalibrationPerFold$new(rr = rr, 
                                         method = "beta"))
 learner_calibrated_beta$id = "Calibrated Beta"
 
-learner_calibrated_isotonic <- as_learner(PipeOpCalibration$new(rr = rr,
+learner_calibrated_isotonic <- as_learner(PipeOpCalibrationPerFold$new(rr = rr,
                                             method ="isotonic"))
 learner_calibrated_isotonic$id = "Calibrated Isotonic"
 
@@ -146,7 +145,7 @@ It is also possible to calibrate a mlr3 pipeline, or to include an Calibrated Le
 pipeline <- as_learner(po("imputemean") %>>% lrn("classif.ranger", 
                                                  predict_type = "prob"))
 
-learner_cal <- as_learner(PipeOpCalibration$new(learner = pipeline, 
+learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = pipeline, 
                                      method = "platt", 
                                      rsmp = rsmp("cv", folds = 5)))
 learner_cal$train(task_train)
@@ -156,7 +155,7 @@ learner_cal$train(task_train)
 
 ```
 # Include Calibrated learner in a pipeline
-learner_cal <- PipeOpCalibration$new(learner = lrn("classif.ranger", 
+learner_cal <- PipeOpCalibrationPerFold$new(learner = lrn("classif.ranger", 
                                                    predict_type = "prob"),
                                      rsmp = rsmp("cv", folds = 5),
                                      method = "platt")
@@ -178,7 +177,7 @@ learner_uncal <- lrn("classif.ranger",
                      mtry = to_tune(1, 10),
                      num.trees = to_tune(100, 500))
 
-learner_cal <- as_learner(PipeOpCalibration$new(learner = learner_uncal, 
+learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal, 
                                                 method = "platt", 
                                                 rsmp = rsmp("cv", folds = 5)))
 at = auto_tuner(

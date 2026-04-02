@@ -7,13 +7,13 @@
 #' @param learner [`Learner`][mlr3::Learner]\cr Base learner to be calibrated. predict_type has to be `"prob"`.
 #' @param rr [`ResampleResult`][mlr3::ResampleResult]\cr Resample result object, either that or learner has to be provided.
 #' @param method `character(1)`\cr Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
-#' @param rsmp [`Resampling`][mlr3::Resampling]\cr Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
+#' @param resampling [`Resampling`][mlr3::Resampling]\cr Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
 #' @param parameters `character(1)`\cr Parameters for beta calibration. Default is `"abm"`.
 #' @param param_vals `list`\cr param_vals, copied from base learner
 #'
 #' @field learner [`Learner`][mlr3::Learner]\cr Base learner to be calibrated.
 #' @field method `character(1)`\cr Calibration method used.
-#' @field rsmp [`Resampling`][mlr3::Resampling]\cr Resampling strategy.
+#' @field resampling [`Resampling`][mlr3::Resampling]\cr Resampling strategy.
 #' @field learners `list`\cr List of learners obtained from resampling.
 #' @field calibrators `list`\cr List of calibrator models.
 #' @field rr [`ResampleResult`][mlr3::ResampleResult]\cr Resample result object.
@@ -36,10 +36,10 @@
 #' learner_uncal <- lrn("classif.ranger", predict_type = "prob")
 #'
 #' # Initialize the calibrated learner
-#' rsmp <- rsmp("cv", folds = 5)
-#' learner_cal <- as_learner(PipeOpCalibration$new(learner = learner_uncal,
+#' resampling <- rsmp("cv", folds = 5)
+#' learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal,
 #'                                                 method = "platt",
-#'                                                 rsmp = rsmp))
+#'                                                 resampling = resampling))
 #'
 #' # Set ID's for the learners
 #' learner_cal$id <- "Calibrated Learner"
@@ -48,34 +48,34 @@
 #' learner_cal$train(task)
 #' @export
 
-PipeOpCalibration <- R6::R6Class(
-  "PipeOpCalibration",
+PipeOpCalibrationPerFold <- R6::R6Class(
+  "PipeOpCalibrationPerFold",
   inherit = mlr3pipelines::PipeOp,
 
   public = list(
     learner = NULL,
     method = NULL,
-    rsmp = NULL,
+    resampling = NULL,
     learners = NULL,
     calibrators = NULL,
     rr = NULL,
     parameters = NULL,
 
     #' @description
-    #' Creates a new `PipeOpCalibration` object.
+    #' Creates a new `PipeOpCalibrationPerFold` object.
     #' @param learner Base learner to be calibrated. predict_type has to be `"prob"`.
     #' @param rr Resample result object, if provided.
     #' @param method Calibration method to use. One of `"platt"`, `"isotonic"`, or `"beta"`. Default is `"platt"`.
-    #' @param rsmp Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
+    #' @param resampling Resampling strategy for cross-validation. Default is `rsmp("cv", folds = 5)`.
     #' @param parameters Parameters for beta calibration. Default is `"abm"`.
     #' @param param_vals param_vals, copied from base learner
     initialize = function(
-    learner = NULL,
-    method = "platt",
-    rsmp = NULL,
-    rr = NULL,
-    parameters = "abm",
-    param_vals = list()) {
+      learner = NULL,
+      method = "platt",
+      resampling = NULL,
+      rr = NULL,
+      parameters = NULL,
+      param_vals = list()) {
 
       if (is.null(learner) && is.null(rr)) {
         stop("Either learner or rr object must be provided.")
@@ -89,29 +89,32 @@ PipeOpCalibration <- R6::R6Class(
       } else {
         self$learner = self$rr$learners[[1]]$clone()
       }
-      if(self$learner$predict_type != "prob") {
+      if (self$learner$predict_type != "prob") {
         stop("predict_type has to be 'prob'")
       }
-      if (!is.null(rsmp)) {
-        self$rsmp = rsmp
-      } else if (is.null(rsmp) && is.null(rr)) {
-        self$rsmp = rsmp("cv", folds = 5)
+      if (!is.null(resampling)) {
+        self$resampling = resampling
+      } else if (is.null(resampling) && is.null(rr)) {
+        self$resampling = rsmp("cv", folds = 5)
       }
       if (self$learner$predict_type != "prob") {
         stop("predict_type has to be 'prob'")
       }
+
       self$method = method
+
+      super$initialize(id = self$learner$base_learner()$id,
+        param_set = alist(self$learner$param_set),
+        param_vals = param_vals,
+        input = data.table(name = "input", train = "Task",
+          predict = "Task"),
+        output = data.table(name = "output", train = "NULL",
+          predict = "PredictionClassif")
+      )
+
       self$parameters = parameters
       self$learners = list()
       self$calibrators = list()
-      super$initialize(id = self$learner$base_learner()$id,
-                       param_set = alist(self$learner$param_set),
-                       param_vals = param_vals,
-                       input = data.table(name = "input", train = "Task",
-                                          predict = "Task"),
-                       output = data.table(name = "output", train = "NULL",
-                                           predict = "PredictionClassif")
-      )
     }
   ),
   active = list(
@@ -129,7 +132,7 @@ PipeOpCalibration <- R6::R6Class(
       positive = task$positive
 
       if (is.null(self$rr)) {
-        rr = resample(task, self$learner, self$rsmp, store_models = TRUE)
+        rr = resample(task, self$learner, self$resampling, store_models = TRUE)
       } else {
         rr = self$rr
       }
@@ -139,35 +142,23 @@ PipeOpCalibration <- R6::R6Class(
 
       for (pred in preds) {
         pred_data = as.data.table(pred)
-        calibration_data = data.table(truth = pred_data$truth,
-                                      response = with(pred_data,
-                                        get(paste0("prob.", positive))))
 
+        calibration_data = data.table(truth = pred_data$truth,
+                                      response = with(pred_data, get(paste0("prob.", positive))))
         colnames(calibration_data) = c("truth", "response")
         calibration_data$response = as.numeric(calibration_data$response)
-
-        if (self$method == "platt") {
-          task_for_calibrator = as_task_classif(calibration_data,
-                                                target = "truth",
-                                                positive = positive,
-                                                id = "Task_cal")
-          calibrator = lrn("classif.log_reg", predict_type = "prob")
-          calibrator$train(task_for_calibrator)
-          self$calibrators[[length(self$calibrators) + 1]] = calibrator
-        } else if (self$method == "isotonic") {
-          calibration_data$truth <- ifelse(calibration_data$truth == positive,
-                                           1, 0)
-          calibrator = as.stepfun(stats::isoreg(x = calibration_data$response,
-                                                y = calibration_data$truth))
-          self$calibrators[[length(self$calibrators) + 1]] = calibrator
-        } else if (self$method == "beta") {
-          calibration_data$truth <- ifelse(calibration_data$truth == positive,
-                                           1, 0)
-          calibrator = betacal::beta_calibration(p = calibration_data$response,
-                                                 y = calibration_data$truth,
-                                                 parameters = self$parameters)
-          self$calibrators[[length(self$calibrators) + 1]] = calibrator
+        task_for_calibrator = as_task_classif(calibration_data,
+                                              target = "truth",
+                                              positive = positive,
+                                              id = "task_cal")
+        if(is.null(self$parameters)){
+          calibrator <- clb(self$method)
+        }else{
+          calibrator <- clb(self$method, self$parameters)
         }
+        calibrator$train(task_for_calibrator)
+        self$calibrators[[length(self$calibrators) + 1]] = calibrator
+
       }
       return(list(NULL))
     },
@@ -181,46 +172,18 @@ PipeOpCalibration <- R6::R6Class(
         pred = learner$predict(task)
         pred_data = as.data.table(pred)
         calibration_data = data.table(truth = task$truth(),
-                                      response = with(pred_data,
-                                        get(paste0("prob.", positive))))
+          response = with(pred_data,
+            get(paste0("prob.", positive))))
         colnames(calibration_data) = c("truth", "response")
         calibration_data$response = as.numeric(calibration_data$response)
+        task_for_calibrator = as_task_classif(calibration_data,
+                                              target = "truth",
+                                              positive = positive,
+                                              id = "task_cal")
 
-        if (self$method == "platt") {
-          task_for_calibrator = as_task_classif(calibration_data,
-                                                target = "truth",
-                                                positive = positive,
-                                                id = "Task_cal")
-          pred_calibrated = self$calibrators[[learner_index]]$predict(
-            task_for_calibrator)
-        } else if (self$method == "isotonic") {
-          pred_calibrated = self$calibrators[[learner_index]](
-            calibration_data$response)
-          prob = as.matrix(data.frame(pred_calibrated, 1 - pred_calibrated))
-          colnames(prob) = c(task$positive, task$negative)
-          response = ifelse(pred_calibrated < 0.5, task$negative,
-                            task$positive)
-          pred_calibrated = PredictionClassif$new(
-            task = task,
-            row_ids = task$row_ids,
-            truth = task$truth(),
-            prob = prob,
-            response = response
-          )
-        } else if (self$method == "beta") {
-          pred_calibrated = betacal::beta_predict(calibration_data$response,
-                                      self$calibrators[[learner_index]])
-          prob = as.matrix(data.frame(pred_calibrated, 1 - pred_calibrated))
-          colnames(prob) = c(task$positive, task$negative)
-          response = ifelse(pred_calibrated < 0.5, task$negative, task$positive)
-          pred_calibrated = PredictionClassif$new(
-            task = task,
-            row_ids = task$row_ids,
-            truth = task$truth(),
-            prob = prob,
-            response = response
-          )
-        }
+        pred_calibrated = self$calibrators[[learner_index]]$predict(
+          task_for_calibrator)
+
         predictions[[length(predictions) + 1]] = as.data.table(pred_calibrated)
       }
 
@@ -250,4 +213,4 @@ PipeOpCalibration <- R6::R6Class(
   )
 )
 
-mlr3pipelines::mlr_pipeops$add("calibration", PipeOpCalibration)
+mlr3pipelines::mlr_pipeops$add("calibration", PipeOpCalibrationPerFold)

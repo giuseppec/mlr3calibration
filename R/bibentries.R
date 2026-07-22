@@ -85,7 +85,7 @@ bibentries = list(
     editor = c(
       person(c("Alexander", "J."), "Smola"),
       person("Peter", "Bartlett"),
-      person("Bernhard", "Schölkopf"),
+      person("Bernhard", "Schoelkopf"),
       person("Dale", "Schuurmans")
     ),
     booktitle = "Advances in Large-Margin Classifiers",

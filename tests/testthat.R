@@ -8,6 +8,5 @@
 
 library(testthat)
 library(mlr3calibration)
-library(mlr3verse)
 
 test_check("mlr3calibration")

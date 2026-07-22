@@ -1,0 +1,60 @@
+{
+  "version": "0.2",
+  "language": "en-US", // we always use American English
+  "useGitignore": true, // respect .gitignore (avoids checking generated/ignored files)
+  // AGENTS.md is vendored from upstream via the sync; downstream
+  // should not have to fix typos in upstream content via its own cspell run.
+  "ignorePaths": ["AGENTS.md"],
+  // File-type scope. Path-globs; no language detection involved. Any
+  // file not matching at least one of these globs is silently skipped
+  // by cspell — same behavior in editor and CLI.
+  "files": [
+    "**/*.md",
+    "**/*.R", "**/*.r",
+    "**/*.qmd", "**/*.Rmd",
+    "**/*.c", "**/*.cpp", "**/*.h", "**/*.hpp",
+    "**/*.json", "**/*.jsonc",
+    "**/*.sh"
+  ],
+  // use cspell R-dictionary + project-specific word list
+  "dictionaries": ["r", "project-words", "latex", "bash", "scientific-terms", "softwareTerms"],
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      // shared word list — commit this file so the whole team benefits
+      "path": "./.cspell/project-words.txt",
+      // enables "Add to project dictionary" command in VS Code / Cursor
+      "addWords": true
+    }
+  ],
+  "languageSettings": [
+    {
+      "languageId": "r",
+      // only spell-check comments in R files, not code identifiers
+      "includeRegExpList": [
+        "/#.*$/gm"
+      ]
+    },
+    {
+      "languageId": "c,cpp",
+      // only spell-check comments in C/C++ files, not code identifiers
+      "includeRegExpList": [
+        "//.*",           // single-line comments: // ...
+        "/\\*[\\s\\S]*?\\*/" // block comments: /* ... */
+      ]
+    },
+    {
+      // JSON / JSONC: only `//` and `/* */` comment text — string values
+      // are technical tokens (paths, identifiers) and would only produce
+      // noise. CStyleComment is a built-in named regex in cSpell.
+      "languageId": "json,jsonc",
+      "includeRegExpList": ["CStyleComment"]
+    },
+    {
+      // Shell scripts: only `#` comments. cSpell has no built-in for
+      // hash-comments, so we use a custom regex.
+      "languageId": "shellscript",
+      "includeRegExpList": ["/(?:^|\\s)#[^\\n]*/g"]
+    }
+  ]
+}

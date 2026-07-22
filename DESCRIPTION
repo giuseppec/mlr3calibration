@@ -1,44 +1,81 @@
 Package: mlr3calibration
-Title: Calibration extension for mlr3
-Version: 0.0.1
-Authors@R: 
-    person("Adrian", "Glos", , "adrianglos117@googlemail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This package is a flexible calibration extension for the mlr3 framework in R. It includes the ability to calibrate objects of type learner, so that they can be trained or predicted as usual. It allows to choose between Platt scaling, Beta calibration and isotonic calibration. In addition, a calibrated learner can either be easily integrated into pipelines or entire pipelines can be calibrated. The calibrated learner can also be initialised by a base learner with tune token, allowing parameter tuning for the calibrated learner. This package also provides the ability to plot the reliability curve for one or more trained learners and a task. Furthermore, this extension provides two calibration measures: the expected calibration error and the integrated calibration index. 
-License: MIT + file LICENSE
+Title: Calibration Extension for 'mlr3'
+Version: 0.1.0.9000
+Authors@R:
+    c(person("Giuseppe", "Casalicchio", , "giuseppe.casalicchio@stat.uni-muenchen.de", role = c("aut", "cre", "cph"),
+      comment = c(ORCID = "0000-0001-5324-5966")),
+      person("Adrian", "Glos", , "adrianglos117@googlemail.com", role = c("aut")),
+      person("Elisabeth", "Meijer", , "e.meijer@campus.lmu.de", role = c("aut"))
+      )
+Description: Probability calibration in the 'mlr3' ecosystem. Provides a unified
+    calibration PipeOp for 'mlr3pipelines', calibration measures for 'mlr3', and reliability plots
+    for comparing calibrated and uncalibrated learners. Supports binary and multiclass
+    calibration strategies such as Platt scaling, isotonic regression, beta calibration,
+    and one-vs-rest wrappers, together with published calibration-error measures.
+URL: https://github.com/giuseppec/mlr3calibration
+BugReports: https://github.com/giuseppec/mlr3calibration/issues
+License: LGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Depends:
-    R (>= 3.1.0),
-    mlr3 (>= 0.20.2)
+    R (>= 3.1.0)
 Imports:
     checkmate,
+    cli,
     data.table,
-    methods,
     mlr3misc (>= 0.9.4),
+    mlr3,
+    mlr3pipelines,
+    mgcv,
     paradox (>= 1.0.1),
     R6 (>= 2.4.1),
-    CalibratR,
-    gmish,
-    betacal,
-    mlr3pipelines,
-    mlr3verse,
-    mlr3tuning,
-    mlr3learners,
-    xgboost,
     stats,
-    ggplot2,
-    dplyr,
-    magrittr,
-    scales,
-    mlbench,
-    remotes
+    ggplot2
 VignetteBuilder: knitr
-Suggests: 
-    testthat (>= 3.0.0),
+Suggests:
+    bbotk,
+    betacal,
+    covr,
+    lgr,
+    mlbench,
+    mlr3learners,
+    mlr3tuning,
     knitr,
-    rmarkdown
-Remotes:
-    gweissman/gmish
+    rpart,
+    rmarkdown,
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Collate:
+    'Calibrator.R'
+    'CalibratorBeta.R'
+    'CalibratorIsotonic.R'
+    'CalibratorOneVsRest.R'
+    'CalibratorPlatt.R'
+    'CalibratorSelector.R'
+    'MeasureClassifACE.R'
+    'MeasureClassifConfidenceECE.R'
+    'MeasureClassifCoxIntercept.R'
+    'MeasureClassifCoxSlope.R'
+    'MeasureClassifECE.R'
+    'MeasureClassifHLTest.R'
+    'MeasureClassifICI.R'
+    'MeasureClassifSCE.R'
+    'MeasureClassifSpiegelhaltersZ.R'
+    'MeasureClassifTACE.R'
+    'MeasureClassifTopLabelECE.R'
+    'PipeOpCalibrate.R'
+    'bibentries.R'
+    'calibration_plot.R'
+    'calibrator_selector_search_space.R'
+    'helper_calibration_measures.R'
+    'helper_calibrator.R'
+    'helper_parameters.R'
+    'helper_pipeop_calibrate.R'
+    'helper_probability.R'
+    'helper_r6.R'
+    'mlr3_calibrators.R'
+    'mlr3calibration-package.R'
+    'tune_then_calibrate.R'
+    'zzz.R'
+Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

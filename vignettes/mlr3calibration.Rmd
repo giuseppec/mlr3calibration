@@ -1,0 +1,355 @@
+---
+title: "mlr3calibration"
+author: "Adrian Glos"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mlr3calibration}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+header-includes:
+  - \pagenumbering{gobble}
+---
+
+# Introduction
+
+`mlr3calibration` extends `mlr3` with probability calibration workflows,
+calibration measures, and reliability plots.
+Build calibration workflows with `po()`, obtain calibrators with `clb()`,
+evaluate with `msr()`, and inspect reliability with `calibration_plot()`.
+
+Two recommended workflows:
+
+1. calibrate a fixed learner or a full graph/pipeline,
+2. jointly tune the calibrated object with an outer `AutoTuner`.
+
+`tune_then_calibrate()` is a sequential one-call alternative and is not the recommended tuning workflow.
+
+Binary classification is the main supported path.
+Multiclass support is available through calibrators that declare the `multiclass` property.
+
+Built-in calibrators:
+
+- Platt scaling through `clb("platt")` (default: Platt soft targets as in the original paper / sklearn;
+  set `label_smoothing = FALSE` for hard-label logistic calibration as in probably;
+  set `input = "logit"` to follow Silva Filho et al. on probability inputs)
+- Beta calibration through `clb("beta")`
+- Isotonic regression through `clb("isotonic")`
+
+# Installation
+
+Install from GitHub:
+
+```{r installation, eval=FALSE}
+#remotes::install_github("giuseppec/mlr3calibration")
+```
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(mlr3)
+library(mlr3calibration)
+library(mlr3learners)
+library(mlr3pipelines)
+library(mlr3tuning)
+
+has_rpart = mlr3misc::require_namespaces("rpart", quietly = TRUE)
+
+set.seed(1)
+```
+
+# Setup
+
+```{r task, eval=has_rpart}
+data("Sonar", package = "mlbench")
+task = as_task_classif(Sonar, target = "Class", positive = "M")
+splits = partition(task)
+task_train = task$clone()$filter(splits$train)
+task_test = task$clone()$filter(splits$test)
+
+measures = msrs(c(
+  "classif.bbrier",
+  "classif.ece",
+  "classif.ici",
+  "classif.hltest",
+  "classif.cox_intercept",
+  "classif.cox_slope",
+  "classif.spiegelhaltersz"
+))
+```
+
+# Workflow 1: calibrate a fixed learner or full graph
+
+Wrap a `Learner`, `GraphLearner`, or bare `Graph` in `po("calibrate", ...)`.
+Put preprocessing that should participate in calibration resampling inside
+`learner = ...`; prefer wrapping the whole graph over
+`po("scale") %>>% po("calibrate", learner = ...)`.
+
+```{r workflow-fixed-graph, eval=has_rpart}
+base_graph = po("scale") %>>%
+  po("learner", learner = lrn("classif.rpart", predict_type = "prob"))
+
+learner_uncal = as_learner(base_graph$clone(deep = TRUE))
+learner_cal = as_learner(po(
+  "calibrate",
+  learner = base_graph$clone(deep = TRUE),
+  calibrator = clb("platt"),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 3)
+))
+
+learner_uncal$id = "uncalibrated"
+learner_cal$id = "calibrated"
+```
+
+```{r workflow-fixed-graph-train, warning=FALSE, eval=has_rpart}
+learner_uncal$train(task_train)
+learner_cal$train(task_train)
+
+prediction_uncal = learner_uncal$predict(task_test)
+prediction_cal = learner_cal$predict(task_test)
+```
+
+# Measures and plots
+
+```{r measures, eval=has_rpart}
+prediction_uncal$score(measures)
+prediction_cal$score(measures)
+```
+
+```{r calibration-plot, fig.height=5, fig.width=9, warning=FALSE, eval=has_rpart}
+calibration_plot(list(learner_uncal, learner_cal), task_test, smooth = TRUE)
+calibration_plot(predictions = list(
+  uncalibrated = prediction_uncal,
+  calibrated = prediction_cal
+), smooth = TRUE)
+```
+
+# Calibration-error measures
+
+Formulas, edge conventions, and sources live on the measure help pages
+(`?MeasureClassifConfidenceECE`, `?MeasureClassifSCE`, `?MeasureClassifACE`,
+`?MeasureClassifTACE`, `?MeasureClassifTopLabelECE`, `?MeasureClassifECE`).
+
+```{r calibration-measures}
+multiclass_measures = msrs(c(
+  "classif.conf_ece",
+  "classif.sce",
+  "classif.ace",
+  "classif.tace",
+  "classif.tl_ece"
+))
+multiclass_measures
+```
+
+| Dictionary key | Meaning | Source |
+|---|---|---|
+| `classif.ece` | Binary positive-class ECE (fixed-width bins) | Kull et al. (2019), Eq. 4 |
+| `classif.conf_ece` | Confidence ECE (max prob vs correctness) | Guo et al. (2017), Eq. 3 |
+| `classif.sce` | Classwise ECE / static calibration error | Nixon et al. (2019); Kull et al. (2019), Eq. 4 |
+| `classif.ace` | Classwise adaptive calibration error | Nixon et al. (2019) |
+| `classif.tace` | Thresholded ACE | Nixon et al. (2019) |
+| `classif.tl_ece` | Top-label ECE | Gupta and Ramdas (2022), Eqs. 2 and 4 |
+
+Default `bins` / `ranges` are package defaults, not part of the published definition.
+
+What each measure conditions on:
+
+- `classif.conf_ece`: maximum probability and whether the predicted label is correct (labels pooled).
+- `classif.tl_ece`: same, but also conditional on the predicted label (never-predicted classes contribute nothing).
+- `classif.sce`: every class probability on all one-vs-rest observations, fixed-width bins, equal class average.
+- `classif.ace`: same classwise target as `classif.sce`, adaptive equal-count ranges.
+- `classif.tace`: `classif.ace` restricted to class probabilities strictly above `epsilon`.
+- `classif.ece`: binary positive-class workflow.
+
+Fixed-width bins use right-closed intervals; probability zero goes in the first bin; empty bins have zero weight and do not renormalize.
+Adaptive ranges sort by probability then row ID, and when `N` is not divisible by `R` the first `N mod R` ranges get one extra observation.
+Every class needs at least `R` retained observations; `classif.tace` errors if a class has too few values above the threshold.
+Classwise measures are macro-averaged (not prevalence-weighted); tiny non-target probabilities can make a classwise scalar look small, which is what `classif.tace` addresses by thresholding.
+None of these alone is full multiclass calibration; interpret them with a proper score (log loss or Brier) and, where useful, reliability plots.
+
+Not provided: micro ECE over all class-probability pairs, prevalence-weighted classwise ECE, macro average of per-predicted-label top-label ECE, multivariate multiclass ICI, or multiclass Hosmer-Lemeshow / Cox / Spiegelhalter measures.
+
+# Workflow 2: jointly tune the calibrated object
+
+Wrap the calibrated learner in an outer `AutoTuner`.
+To tune over several calibrators, use `clb("selector")` with
+`calibrator_selector_search_space()`.
+
+```{r workflow-outer-autotuner, warning=FALSE, eval=has_rpart}
+learner_joint = as_learner(po(
+  "calibrate",
+  learner = lrn("classif.rpart", predict_type = "prob"),
+  calibrator = clb("selector", choices = c("platt", "beta")),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 2)
+))
+
+search_space = paradox::ParamSetCollection$new(c(
+  list(paradox::ps(
+    "calibrate.classif.rpart.cp" = paradox::p_dbl(0.001, 0.1)
+  )),
+  list(calibrator_selector_search_space(choices = c("platt", "beta")))
+))
+
+autotuner_joint = AutoTuner$new(
+  learner = learner_joint,
+  resampling = rsmp("cv", folds = 2),
+  measure = msr("classif.bbrier"),
+  search_space = search_space,
+  terminator = bbotk::trm("evals", n_evals = 4),
+  tuner = tnr("grid_search", resolution = 2)
+)
+
+suppressWarnings(autotuner_joint$train(task_train))
+autotuner_joint$predict(task_test)$score(msr("classif.bbrier"))
+```
+
+# Convenience helper: tune_then_calibrate
+
+`tune_then_calibrate()` tunes on the full training task, then calibrates that fixed tuned learner.
+Hyperparameters are not jointly tuned with calibration; prefer an outer `AutoTuner` around `po("calibrate", ...)` instead.
+
+```{r tune-then-calibrate, warning=FALSE, eval=has_rpart}
+inner_at = auto_tuner(
+  tuner = tnr("grid_search", resolution = 2),
+  learner = lrn(
+    "classif.rpart",
+    predict_type = "prob",
+    cp = paradox::to_tune(0.001, 0.1)
+  ),
+  resampling = rsmp("cv", folds = 2),
+  measure = msr("classif.bbrier"),
+  term_evals = 4
+)
+
+learner_seq = tune_then_calibrate(
+  learner = inner_at,
+  calibrator = clb("platt"),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 2)
+)
+
+learner_seq$train(task_train)
+learner_seq$predict(task_test)$score(msr("classif.bbrier"))
+```
+
+# Reusing a precomputed resample result
+
+Compare several calibrators on the same out-of-fold predictions by computing the resampling once:
+
+```{r rr, warning=FALSE, eval=has_rpart}
+rr = resample(
+  task_train,
+  lrn("classif.rpart", predict_type = "prob"),
+  rsmp("cv", folds = 3),
+  store_models = TRUE
+)
+
+learner_platt = as_learner(po(
+  "calibrate",
+  rr = rr,
+  calibrator = clb("platt"),
+  strategy = "oof"
+))
+
+learner_beta = as_learner(po(
+  "calibrate",
+  rr = rr,
+  calibrator = clb("beta", parameters = "ab"),
+  strategy = "oof"
+))
+
+scores = data.frame(
+  platt = learner_platt$train(task_train)$predict(task_test)$score(msr("classif.ece")),
+  beta = learner_beta$train(task_train)$predict(task_test)$score(msr("classif.ece"))
+)
+
+scores
+```
+
+The precomputed result must be from the same calibration task and contain stored probability learners with complete out-of-fold test predictions.
+`learner`, `resampling`, and learner hyperparameters cannot be supplied in this mode.
+With `strategy = "oof"`, a single uncalibrated model is still refitted on the full training task using the stored learners' configuration.
+
+# Multiclass support
+
+Use `clb("ovr")` for one-vs-rest wrapping.
+Direct `clb("platt")` is binary-only; multiclass Platt is `clb("ovr")`.
+
+```{r multiclass, warning=FALSE, eval=has_rpart}
+task_iris = as_task_classif(iris, target = "Species")
+splits_iris = partition(task_iris)
+task_iris_train = task_iris$clone()$filter(splits_iris$train)
+task_iris_test = task_iris$clone()$filter(splits_iris$test)
+
+learner_multiclass = as_learner(po(
+  "calibrate",
+  learner = lrn("classif.rpart", predict_type = "prob"),
+  calibrator = clb("ovr", calibrator = clb("isotonic")),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 3)
+))
+
+learner_multiclass$train(task_iris_train)
+head(learner_multiclass$predict(task_iris_test)$prob)
+```
+
+# Writing a custom calibrator
+
+Subclass [Calibrator], register with `register_calibrator()`, and construct with `clb()`.
+The example below shows the extension hooks only; it is not a recommended calibrator.
+
+```{r custom-calibrator, warning=FALSE, eval=has_rpart}
+TemperatureCalibrator = R6::R6Class(
+  "TemperatureCalibrator",
+  inherit = Calibrator,
+  public = list(
+    initialize = function(temperature = 1) {
+      param_set = paradox::ps(
+        temperature = paradox::p_dbl(lower = 0.1, upper = 5, default = 1, tags = "train")
+      )
+      super$initialize(
+        id = "temperature_example",
+        param_set = param_set,
+        properties = c("twoclass", "multiclass"),
+        label = "Temperature example calibrator"
+      )
+      self$param_set$values$temperature = temperature
+    }
+  ),
+  private = list(
+    .temperature = NULL,
+    .reset = function() {
+      private$.temperature = NULL
+    },
+    .train = function(truth, prob, class_names) {
+      temperature = self$param_set$values$temperature
+      if (is.null(temperature)) {
+        temperature = 1
+      }
+      private$.temperature = temperature
+    },
+    .predict = function(prob, class_names) {
+      logits = log(pmax(prob, .Machine$double.eps))
+      exp(logits / private$.temperature)
+    }
+  )
+)
+
+register_calibrator("temperature_example", TemperatureCalibrator)
+calibrator = clb("temperature_example", temperature = 1.5)
+
+learner_custom = as_learner(po(
+  "calibrate",
+  learner = lrn("classif.rpart", predict_type = "prob"),
+  calibrator = calibrator,
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 2)
+))
+
+learner_custom$train(task_train)
+print(learner_custom$predict(task_test)$score(msr("classif.bbrier")))
+mlr3_calibrators$remove("temperature_example")
+```
+
+Discover keys with `mlr3_calibrators$keys()`.
+Calibrators with required constructor arguments can be registered and built via `clb(key, ...)`, but they can enter `CalibratorSelector` only when `clb(key)` works without arguments.

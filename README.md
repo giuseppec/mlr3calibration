@@ -1,191 +1,250 @@
+
 # mlr3calibration
 
-## General
-
-This package is a flexible calibration extension for the mlr3 framework in R. 
-It includes the ability to calibrate objects of type learner, so that they can 
-be trained or predicted as usual. It allows to choose between Platt scaling, 
-Beta calibration and isotonic calibration. In addition, a calibrated learner 
-can either be easily integrated into pipelines or entire pipelines can be
-calibrated. The calibrated learner can also be initialised by a base learner 
-with tune token, allowing parameter tuning for the calibrated learner. This 
-package also provides the ability to plot the reliability curve for one or 
-more trained learners and a task. Furthermore, this extension provides two 
-calibration measures: the expected calibration error and the integrated 
-calibration index. 
+mlr3calibration extends mlr3 with probability calibration workflows,
+calibration measures, and reliability plots. The central entry point is
+`po("calibrate")`, which wraps a probabilistic Learner, GraphLearner, or
+full Graph.
 
 ## Installation
 
-You can install the mlr3calibration package from GitHub with the following code:
+Install the released version from CRAN:
 
+``` r
+install.packages("mlr3calibration")
 ```
+
+Install the development version from GitHub:
+
+``` r
 remotes::install_github("giuseppec/mlr3calibration")
-
 ```
 
-## Calibration
+## Core workflows
 
-To use the mlr3calibration package, we first need a binary classification task
+`po("calibrate")` supports two workflows:
 
-```
-# Load a binary classification task
+1.  Calibrate a fixed learner or full graph/pipeline.
+2.  Jointly tune the calibrated object with an outer `AutoTuner`.
+
+Two calibration strategies are available, mirroring scikit-learn’s
+`CalibratedClassifierCV`:
+
+  - `strategy = "oof"` (default, like `ensemble = FALSE`) fits one
+    calibrator on the pooled out-of-fold predictions and refits a single
+    uncalibrated model on the full training task; at prediction time
+    that single model is calibrated.
+  - `strategy = "per_fold"` (like `ensemble = TRUE`) fits one calibrator
+    per resampling fold and averages the fold-wise calibrated
+    probabilities, yielding a calibrated bagged ensemble.
+
+Preprocessing that should participate in calibration resampling should
+be part of `learner = ...`, not placed upstream from `po("calibrate")`.
+
+`tune_then_calibrate()` is a sequential one-call alternative: it tunes
+on the full training task, then calibrates that fixed learner. Prefer an
+outer `AutoTuner` around `po("calibrate")` for joint tuning.
+
+### 1\. Calibrate a fixed learner or full graph
+
+``` r
 set.seed(1)
+
+library(mlr3)
 library(mlr3calibration)
-library(mlr3verse)
+library(mlr3learners)
+library(mlr3pipelines)
+
 data("Sonar", package = "mlbench")
 task = as_task_classif(Sonar, target = "Class", positive = "M")
 splits = partition(task)
 task_train = task$clone()$filter(splits$train)
 task_test = task$clone()$filter(splits$test)
-```
 
-To calibrate a learner you need an uncalibrated learner, a resampling strategy and a calibration method (platt, beta or isotonic). To prevent overfitting, calibration can be performed using cross-validation. The dataset is divided into k folds, and each fold is used for calibration once, while the other (k-1) folds are used for training the classifier. If, for example, a holdout resampling strategy is selected, then no cross-validated calibration is performed, but the base learner is trained on the training split and the calibrator on the holdout.
+base_graph = po("scale") %>>%
+  po("learner", learner = lrn("classif.rpart", predict_type = "prob"))
 
-```
-# Initialize the uncalibrated learner
-learner_uncal <- lrn("classif.xgboost", nrounds = 50, predict_type = "prob")
+learner_uncal = as_learner(base_graph$clone(deep = TRUE))
+learner_cal = as_learner(po(
+  "calibrate",
+  learner = base_graph$clone(deep = TRUE),
+  calibrator = clb("platt"),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 3)
+))
 
-# Initialize the calibrated learner
-rsmp <- rsmp("cv", folds = 5)
-learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal, 
-                                              method = "beta",
-                                              rsmp = rsmp))
-
-# Set ID's for the learners
-learner_uncal$id <- "Uncalibrated Learner"
-learner_cal$id <- "Calibrated Learner"
-```
-
-The calibrated learner can be trained in the same way as the base learner.
-
-```
-# Train the learners
 learner_uncal$train(task_train)
 learner_cal$train(task_train)
+
+prediction_uncal = learner_uncal$predict(task_test)
+prediction_cal = learner_cal$predict(task_test)
+prediction_cal$score(msr("classif.bbrier"))
 ```
 
-## Calibration Measures
+### 2\. Jointly tune the calibrated object with an outer AutoTuner
 
-To measure the calibration, this package provides the Expected Calibration Error (ECE) and the Integrated Calibration Index (ICI). The ECE is a measure of the difference between the predicted probabilities and the true outcomes. The ICI is a weighted average of the absolute differences between the calibration curve and the diagonal perfectly calibrated line.
-
-```
-# Predict the Learners
-preds_uncal <- learner_uncal$predict(task_test)
-preds_cal <- learner_cal$predict(task_test)
-
-# Calculate the Expected Calibration Error (ECE)
-ece_uncal <-  preds_uncal$score(ece$new())
-ece_cal <-  preds_cal$score(ece$new())
-
-# Uncalibrated ECE
-ece_uncal
-#classif.ece 
-#  0.1046099 
-
-# Calibrated ECE
-ece_cal
-#classif.ece 
-#0.09758731 
-```
-
-## Reliability Curve
-
-To visualize how well the model is calibrated, this package provides a calibration plot. The calibration plot shows the relationship between the predicted probabilities and the true outcomes. The plot is divided into bins, and within each bin, the mean predicted probability and the mean observed outcome are calculated. The calibration plot can be smoothed using LOESS.
-
-```
-# List the Learners you want to plot
-lrns = list(learner_uncal, learner_cal)
-
-# Plot the reliability curve
-calibrationplot(lrns, task_test, smooth = TRUE)
-
-```
-
-## Calibration with resample Object
-
-If you want to compare the three calibration approaches with each other, it can be time-consuming to train each calibration approach using cross validation. In these cases, you can train an rr object, store the models and pass it to the PipeOpCalibrationPerFold. This means that the base learner has to be trained once in advance, and only the calibrators have to be trained in the PipeOpCalibrationPerFold using the holdout folds.
-
-```
-# Initialize base learner
-learner <- lrn("classif.xgboost", predict_type = "prob")
-
-# Initialize resampling strategy
-rsmp <- rsmp("cv", folds = 5)
-
-# Create rr object
-rr <- resample(task_train, learner, rsmp, store_models = TRUE)
-
-# Initialze the calibrated learners
-learner_calibrated_platt <- as_learner(PipeOpCalibrationPerFold$new(rr = rr, 
-                                         method = "platt"))
-learner_calibrated_platt$id = "Calibrated Platt"
-
-learner_calibrated_beta <- as_learner(PipeOpCalibrationPerFold$new(rr = rr, 
-                                        method = "beta"))
-learner_calibrated_beta$id = "Calibrated Beta"
-
-learner_calibrated_isotonic <- as_learner(PipeOpCalibrationPerFold$new(rr = rr,
-                                            method ="isotonic"))
-learner_calibrated_isotonic$id = "Calibrated Isotonic"
-
-# Train the calibrated learners
-learner_calibrated_platt$train(task_train)
-learner_calibrated_beta$train(task_train)
-learner_calibrated_isotonic$train(task_train)
-```
-
-## Pipelines
-
-It is also possible to calibrate a mlr3 pipeline, or to include an Calibrated Learner in a pipeline.
-
-### Calibrate a Pipeline
-
-```
-# Calibrate a pipeline
-pipeline <- as_learner(po("imputemean") %>>% lrn("classif.ranger", 
-                                                 predict_type = "prob"))
-
-learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = pipeline, 
-                                     method = "platt", 
-                                     rsmp = rsmp("cv", folds = 5)))
-learner_cal$train(task_train)
-```
-
-### Include Calibrated Learner in a Pipeline
-
-```
-# Include Calibrated learner in a pipeline
-learner_cal <- PipeOpCalibrationPerFold$new(learner = lrn("classif.ranger", 
-                                                   predict_type = "prob"),
-                                     rsmp = rsmp("cv", folds = 5),
-                                     method = "platt")
-
-pipeline <- as_learner(po("imputemean") %>>% learner_cal)
-pipeline$train(task_train)
-```
-
-## Tuning
-
-You can either pass a tuned base learner to the calibrator or tuning your base learner within the calibrator.
-
-```
+``` r
 library(mlr3tuning)
 
-# Include Calibrated learner in Pipeline
-learner_uncal <- lrn("classif.ranger",
-                     predict_type = "prob",
-                     mtry = to_tune(1, 10),
-                     num.trees = to_tune(100, 500))
+learner_joint = as_learner(po(
+  "calibrate",
+  learner = lrn("classif.rpart", predict_type = "prob"),
+  calibrator = clb("selector", choices = c("platt", "beta")),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 2)
+))
 
-learner_cal <- as_learner(PipeOpCalibrationPerFold$new(learner = learner_uncal, 
-                                                method = "platt", 
-                                                rsmp = rsmp("cv", folds = 5)))
-at = auto_tuner(
-  tuner = tnr("random_search"),
-  learner = learner_cal,
-  resampling = rsmp ("holdout"),
+search_space = paradox::ps(
+  "calibrate.classif.rpart.cp" = paradox::p_dbl(0.001, 0.1)
+)
+search_space = paradox::ParamSetCollection$new(c(
+  list(search_space),
+  list(calibrator_selector_search_space(choices = c("platt", "beta")))
+))
+
+autotuner_joint = AutoTuner$new(
+  learner = learner_joint,
+  resampling = rsmp("cv", folds = 2),
   measure = msr("classif.bbrier"),
-  term_evals = 4)
+  search_space = search_space,
+  terminator = bbotk::trm("evals", n_evals = 4),
+  tuner = tnr("grid_search", resolution = 2)
+)
 
-at$train(task_train)
+suppressWarnings(autotuner_joint$train(task_train))
+autotuner_joint$predict(task_test)$score(msr("classif.bbrier"))
 ```
+
+### Convenience helper: tune\_then\_calibrate
+
+``` r
+inner_at = auto_tuner(
+  tuner = tnr("grid_search", resolution = 2),
+  learner = lrn(
+    "classif.rpart",
+    predict_type = "prob",
+    cp = paradox::to_tune(0.001, 0.1)
+  ),
+  resampling = rsmp("cv", folds = 2),
+  measure = msr("classif.bbrier"),
+  term_evals = 4
+)
+
+learner_seq = tune_then_calibrate(
+  learner = inner_at,
+  calibrator = clb("platt"),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 2)
+)
+
+learner_seq$train(task_train)
+learner_seq$predict(task_test)$score(msr("classif.bbrier"))
+```
+
+## Measures and plots
+
+Binary measures: `classif.ece` (binary positive-class ECE),
+`classif.ici`, `classif.hltest`, `classif.cox_intercept`,
+`classif.cox_slope`, and `classif.spiegelhaltersz`. Multiclass
+calibration-error measures: `classif.conf_ece`, `classif.sce`,
+`classif.ace`, `classif.tace`, and `classif.tl_ece`. See
+`vignette("mlr3calibration")` for sources, edge conventions, and
+selection guidance.
+
+``` r
+measures = msrs(c(
+  "classif.bbrier",
+  "classif.ece",
+  "classif.ici",
+  "classif.hltest",
+  "classif.cox_intercept",
+  "classif.cox_slope",
+  "classif.spiegelhaltersz"
+))
+
+prediction_uncal$score(measures)
+prediction_cal$score(measures)
+
+calibration_plot(list(learner_uncal, learner_cal), task_test, smooth = TRUE)
+calibration_plot(predictions = list(
+  uncalibrated = prediction_uncal,
+  calibrated = prediction_cal
+), smooth = TRUE)
+```
+
+## Reusing a precomputed resample result
+
+``` r
+rr = resample(
+  task_train,
+  lrn("classif.rpart", predict_type = "prob"),
+  rsmp("cv", folds = 3),
+  store_models = TRUE
+)
+
+learner_platt = as_learner(po(
+  "calibrate",
+  rr = rr,
+  calibrator = clb("platt"),
+  strategy = "oof"
+))
+
+learner_platt$train(task_train)
+learner_platt$predict(task_test)$score(msr("classif.ece"))
+```
+
+The precomputed result must be from the same calibration task and
+contain stored probability learners with complete out-of-fold test
+predictions. `learner`, `resampling`, and learner hyperparameters cannot
+be supplied in this mode. With `strategy = "oof"`, a single uncalibrated
+model is still refitted on the full training task using the stored
+learners’ configuration.
+
+## Multiclass support
+
+Use `clb("ovr")` to wrap a binary-capable calibrator with one-vs-rest
+fitting and row normalization. Direct `clb("platt")` is binary-only;
+multiclass Platt is `clb("ovr")`.
+
+``` r
+task_iris = as_task_classif(iris, target = "Species")
+splits_iris = partition(task_iris)
+task_iris_train = task_iris$clone()$filter(splits_iris$train)
+task_iris_test = task_iris$clone()$filter(splits_iris$test)
+
+learner_multiclass = as_learner(po(
+  "calibrate",
+  learner = lrn("classif.rpart", predict_type = "prob"),
+  calibrator = clb("ovr", calibrator = clb("isotonic")),
+  strategy = "oof",
+  resampling = rsmp("cv", folds = 3)
+))
+
+learner_multiclass$train(task_iris_train)
+prediction_iris = learner_multiclass$predict(task_iris_test)
+head(prediction_iris$prob)
+
+prediction_iris$score(msrs(c(
+  "classif.conf_ece",
+  "classif.sce",
+  "classif.ace",
+  "classif.tace",
+  "classif.tl_ece"
+)))
+```
+
+## References
+
+  - Platt, J. (1999). Probabilistic outputs for support vector machines
+    and comparisons to regularized likelihood methods. *Advances in
+    Large Margin Classifiers*, MIT Press.
+  - Zadrozny, B., & Elkan, C. (2002). Transforming classifier scores
+    into accurate multiclass probability estimates. *KDD*.
+  - Niculescu-Mizil, A., & Caruana, R. (2005). Predicting good
+    probabilities with supervised learning. *ICML*.
+  - Kull, M., Silva Filho, T. M., & Flach, P. (2017). Beta calibration.
+    *AISTATS*.
+  - scikit-learn:
+    [`CalibratedClassifierCV`](https://scikit-learn.org/stable/modules/calibration.html)
+    — `ensemble = FALSE` / `ensemble = TRUE` correspond to `strategy =
+    "oof"` / `"per_fold"`.
